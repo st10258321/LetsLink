@@ -1,6 +1,6 @@
-package com.example.letslink
+package com.example.letslink.activities
 
-import android.content.Intent
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.letslink.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -92,7 +93,7 @@ fun EventSwipeDeck(
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = {
-                            (context as? android.app.Activity)?.finish()
+                            (context as? Activity)?.finish()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                     ) {

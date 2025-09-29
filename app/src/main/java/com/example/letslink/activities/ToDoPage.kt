@@ -1,4 +1,4 @@
-package com.example.letslink
+package com.example.letslink.activities
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 import androidx.fragment.app.Fragment
+import com.example.letslink.R
 
 class ToDoFragment : Fragment() {
 

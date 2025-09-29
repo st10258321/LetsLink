@@ -1,4 +1,4 @@
-package com.example.letslink
+package com.example.letslink.model
 
 data class Message(
     val text: String,

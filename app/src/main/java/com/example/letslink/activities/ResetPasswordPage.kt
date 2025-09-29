@@ -1,40 +1,27 @@
-package com.example.letslink
+package com.example.letslink.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.letslink.R
 import com.google.android.material.button.MaterialButton
 
-class RegisterPage : AppCompatActivity() {
+class ResetPasswordPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_register_page)
+        setContentView(R.layout.activity_reset_password_page)
 
 
-        val SignInButton : TextView = findViewById(R.id.sign_in_link)
-        val SignUpButton : MaterialButton = findViewById(R.id.sign_up_button)
+        val resetPasswordButton: MaterialButton = findViewById(R.id.reset_password_button)
 
-
-        SignInButton.setOnClickListener {
+        resetPasswordButton.setOnClickListener {
             val intent = Intent(this, LoginPage::class.java)
             startActivity(intent)
         }
-
-        SignUpButton.setOnClickListener {
-            val intent = Intent(this, LoginPage::class.java)
-            startActivity(intent)
-        }
-
-
-
-
-
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

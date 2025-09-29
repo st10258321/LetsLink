@@ -1,13 +1,15 @@
-package com.example.letslink
+package com.example.letslink.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.letslink.R
+import com.example.letslink.activities.RegisterPage
+import com.example.letslink.activities.ResetPasswordPage
 import com.example.letslink.nav.HorizontalCoordinator
 import com.google.android.material.button.MaterialButton
 

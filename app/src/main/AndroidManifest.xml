@@ -24,7 +24,7 @@
             android:name=".EventsPage"
             android:exported="false" />
         <activity
-            android:name=".UserSafety"
+            android:name=".activities.UserSafety"
             android:exported="false" />
         <activity
             android:name=".CreateTaskPage"
@@ -42,7 +42,7 @@
             android:name=".ToDoPage"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordPage"
+            android:name=".activities.ForgotPasswordPage"
             android:exported="false" />
         <activity
             android:name=".nav.HorizontalCoordinator"
@@ -52,19 +52,19 @@
             android:exported="false"
             android:theme="@style/Theme.LetsLink" />
         <activity
-            android:name=".ResetPasswordPage"
+            android:name=".activities.ResetPasswordPage"
             android:exported="false" />
         <activity
-            android:name=".RegisterPage"
+            android:name=".activities.RegisterPage"
             android:exported="false" />
         <activity
-            android:name=".LoginPage"
+            android:name=".activities.LoginPage"
             android:exported="false" />
         <activity
-            android:name=".GroupChatActivity"
+            android:name=".activities.GroupChatActivity"
             android:exported="true" />
         <activity
-            android:name=".Compass"
+            android:name=".activities.Compass"
             android:exported="false" />
         <activity
             android:name=".FriendMap"
@@ -83,7 +83,7 @@
             </intent-filter>
         </activity> <!-- Event Voting screen -->
         <activity
-            android:name=".EventVoting"
+            android:name=".activities.EventVoting"
             android:exported="false"
             android:label="@string/title_activity_event_voting"
             android:theme="@style/Theme.LetsLink" />

@@ -1,4 +1,4 @@
-package com.example.letslink
+package com.example.letslink.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,6 +6,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
+import com.example.letslink.model.Message
+import com.example.letslink.R
 
 class MessageAdapter(private val messages: List<Message>) :
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {

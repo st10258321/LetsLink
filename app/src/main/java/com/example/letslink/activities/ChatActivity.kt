@@ -1,4 +1,4 @@
-package com.example.letslink
+package com.example.letslink.activities
 
 import android.os.Bundle
 import android.widget.Button
@@ -6,6 +6,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.letslink.model.Message
+import com.example.letslink.adapter.MessageAdapter
+import com.example.letslink.R
 
 class ChatActivity : AppCompatActivity() {
 

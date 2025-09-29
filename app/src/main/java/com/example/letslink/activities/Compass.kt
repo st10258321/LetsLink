@@ -1,5 +1,8 @@
-package com.example.letslink
+package com.example.letslink.activities
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -11,11 +14,8 @@ import android.view.animation.RotateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
+import com.example.letslink.R
 import com.example.letslink.nav.HorizontalCoordinator
-
 
 class Compass : AppCompatActivity(), SensorEventListener {
 

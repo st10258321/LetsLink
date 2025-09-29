@@ -15,7 +15,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.letslink.Compass
+import com.example.letslink.activities.Compass
 import com.example.letslink.R
 import com.example.letslink.nav.HorizontalCoordinator
 import com.google.android.gms.maps.CameraUpdateFactory
