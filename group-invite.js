@@ -2,11 +2,9 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-const hostIp = '10.0.2.2';
-
-// Middleware to parse JSON bodies
+const host = 'letslink-api.onrender.com'; 
 app.use(express.json());
 
 const groups = {};
@@ -19,14 +17,14 @@ function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'D
         userId: userId,
         groupName: groupName,
         description: description,
-        inviteLink: `http://${hostIp}:${port}/invite/${groupId}`,
+        inviteLink: `https://${host}/invite/${groupId}`,
         members: members
     };
 }
 
 
 /**
- * Endpoint to create a new group. It now REQUIRES the 'groupId' to be sent by the app
+ * Endpoint to create a new group. It now requires the groupId to be sent by the app
  * 
  */
 app.post('/groups', (req, res) => {
@@ -60,7 +58,7 @@ app.post('/groups', (req, res) => {
     res.status(201).json(createGroupResponse(groupId, userId, groups[groupId].groupName, groups[groupId].description));
 });
 
-// --- CRITICAL ADDITION: JOIN GROUP ENDPOINT ---
+
 
 /**
  * Endpoint for a user to join a group using the invite link/group ID.
@@ -97,10 +95,8 @@ app.post('/api/group/join', (req, res) => {
     ));
 });
 
-// --- Existing GET Invite Endpoint ---
-
 /**
- * Endpoint for checking if a group link is valid.ge.
+ * Endpoint for checking if a group link is valid
  */
 app.get('/invite/:groupId', (req, res) => {
     const groupId = req.params.groupId;
@@ -118,5 +114,5 @@ app.get('/invite/:groupId', (req, res) => {
 // Start the server
 app.listen(port, () => {
     console.log(`Group Invitation API is running and listening on port ${port}`);
-    console.log(`Android App must connect to: http://${hostIp}:${port}`);
+    console.log(`App must connect to: http://${hostIp}:${port}`);
 });
