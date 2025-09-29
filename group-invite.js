@@ -114,5 +114,5 @@ app.get('/invite/:groupId', (req, res) => {
 // Start the server
 app.listen(port, () => {
     console.log(`Group Invitation API is running and listening on port ${port}`);
-    console.log(`App must connect to: http://${hostIp}:${port}`);
+    console.log(`App must connect to: http://${host}:${port}`);
 });
