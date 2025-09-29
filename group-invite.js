@@ -54,9 +54,9 @@ app.post('/groups', (req, res) => {
     // Initialize the group with details
     groups[groupId] = {
         userId: userId,
-        groupName: `Group ${groupId.substring(0, 4)}`, 
-        description: 'This group was created via the mobile app.',
-        members: [userId] 
+        groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
+        description: req.body.description || `Joined group : ${userId}.`,
+        members: [userId] 
     };
 
     console.log(`Created new group: ${groupId} (Owner: ${userId})`);
