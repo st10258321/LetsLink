@@ -24,7 +24,7 @@ function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'D
         userId: userId,
         groupName: groupName,
         description: description,
-        inviteLink: `https://${host}/invite/${groupId}`,
+        inviteLink: `https://${host}/invite/${groupName}`,
         members: members
     };
 }
