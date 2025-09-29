@@ -4,6 +4,9 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import androidx.room.Dao
+import com.example.letslink.model.Group
+import com.example.letslink.model.GroupResponse
+
 // You'll need to define Group, GroupRequest, JoinGroupRequest, and GroupResponse
 
 /**
@@ -13,10 +16,10 @@ interface LetsLinkAPI {
 
     @GET("groups")
     suspend fun getGroups(): List<Group>
-
-    @POST("groups")
-    suspend fun createGroup(@Body request: GroupRequest): GroupResponse
-
-    @POST("api/group/join")
-    suspend fun joinGroup(@Body request: JoinGroupRequest): GroupResponse
+//
+//    @POST("groups")
+//    suspend fun createGroup(@Body request: GroupRequest): GroupResponse
+//
+//    @POST("api/group/join")
+//    suspend fun joinGroup(@Body request: JoinGroupRequest): GroupResponse
 }

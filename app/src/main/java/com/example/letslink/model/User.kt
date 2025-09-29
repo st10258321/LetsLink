@@ -10,5 +10,6 @@ data class User(
     val userId : UUID = UUID.randomUUID(),
     val firstName :String,
     val password : String,
+    val dateOfBirth : String,
     val email: String
 )
