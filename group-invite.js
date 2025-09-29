@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const host = 'https://letslink-api.onrender.com'; 
+const host = 'letslink-api.onrender.com'; 
 app.use(express.json());
 
 const groups = {};
