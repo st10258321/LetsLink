@@ -8,6 +8,13 @@ const host = 'letslink-api.onrender.com';
 app.use(express.json());
 
 const groups = {};
+//route handler tells the api how to behave when the link has been clicked or put on the browser
+app.get('/', (req, res) => {
+    res.status(200).json({ 
+        status: "OK", 
+        message: "API is running successfully" 
+    });
+});
 
 function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'Default Group Name', description = 'A new collaborative group.') {
     const members = groups[groupId]?.members || [userId];
