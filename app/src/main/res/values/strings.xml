@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">API_TEST</string>
+=======
+    <string name="app_name">LetsLink</string>
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85
 </resources>

@@ -19,6 +19,10 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
 rootProject.name = "API_TEST"
+=======
+rootProject.name = "LetsLink"
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85
 include(":app")
  

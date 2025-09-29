@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+<<<<<<< HEAD
     id("kotlin-kapt")
 }
 
@@ -11,6 +12,17 @@ android {
     defaultConfig {
         applicationId = "com.example.api_test"
         minSdk = 24
+=======
+}
+
+android {
+    namespace = "com.example.letslink"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.example.letslink"
+        minSdk = 28
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -46,6 +58,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+<<<<<<< HEAD
 
     implementation(libs.androidx.recyclerview)
 
@@ -76,3 +89,6 @@ dependencies {
     // for reading 2.2.0 metadata
     implementation(libs.kotlinx.metadata.jvm)
 }
+=======
+}
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85

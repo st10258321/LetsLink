@@ -2,4 +2,8 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
+<<<<<<< HEAD
   }
+=======
+}
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85

@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+<<<<<<< HEAD
     <color name="green">#08AE77</color>
     <color name="purple">#9D61E0</color>
     <color name="grey">#949393</color>
@@ -14,4 +15,6 @@
     <color name="lime_green">#32CD32</color>
     <color name="forest_green">#228B22</color>
     <color name="medium_sea_green">#3CB371</color>
+=======
+>>>>>>> b424d3785786909991a504bcf27b25b30419af85
 </resources>
