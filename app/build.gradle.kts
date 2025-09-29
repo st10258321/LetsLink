@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
 }
 
 android {
@@ -76,6 +77,7 @@ dependencies {
 
     // Extras
     implementation(libs.glide)
+    implementation(libs.androidx.room.common.jvm)
 
     // Testing
     testImplementation(libs.junit)
@@ -89,4 +91,33 @@ dependencies {
     //pfff
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Room Database
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+
+
+    // Hashing
+    implementation(platform("org.kotlincrypto.hash:bom:0.8.0"))
+    implementation("org.kotlincrypto.hash:md")
+    implementation("org.kotlincrypto.hash:sha1")
+    implementation("org.kotlincrypto.hash:sha2")
+    implementation("org.kotlincrypto.hash:sha3")
+    implementation("org.kotlincrypto.hash:blake2")
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit2.kotlin.coroutines.adapter)
+
+    // Gson library
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // for reading 2.2.0 metadata
+    implementation(libs.kotlinx.metadata.jvm)
 }
