@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "group-inivite.js"
+    "start": "node group-inivite.js"
   },
   "keywords": [],
   "author": "",
