@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        Allows cleartext (unencrypted HTTP) traffic only to localhost.
+        This is necessary for connecting to a local Node.js or Flask server
+        from an Android Emulator/device running API level 28 (Android 9) or higher.
+    -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!--
+            Note: For Android Emulator/device to access a server running on your
+            host machine, you must use the special loopback address 10.0.2.2
+            instead of localhost/127.0.0.1.
+            If your API is running inside the emulator itself (which is rare), use 'localhost'.
+            Since you are running Node.js on your computer (host), we specify 10.0.2.2.
+        -->
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>
