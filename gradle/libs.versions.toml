@@ -21,6 +21,7 @@ navigationFragmentKtx = "2.6.0"
 navigationtabbar = "1.2.5"
 navigationUiKtx = "2.6.0"
 animation = "1.9.1"
+playServicesAuth = "21.0.0"
 recyclerview = "1.4.0"
 ui = "1.9.1"
 playServicesMaps = "19.2.0"
@@ -37,6 +38,10 @@ lifecycleViewmodelKtx = "2.9.0"
 roomRuntime = "2.8.1"
 roomKtx = "2.8.1"
 roomCompiler = "2.8.1"
+firebase-database = "21.0.0"
+firebase-auth = "23.2.1"
+google-signin = "20.7.0"
+firebase-messaging = "24.1.2"
 
 
 
@@ -47,6 +52,8 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-viewpager = { module = "androidx.viewpager:viewpager", version.ref = "viewpager" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -72,6 +79,7 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 material-v1120 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 navigationtabbar = { module = "devlight.io:navigationtabbar", version.ref = "navigationtabbar" }
+play-services-auth-v2100 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 filament-android = { group = "com.google.ar.sceneform", name = "filament-android", version.ref = "filamentAndroid" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
@@ -85,6 +93,10 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebase-database" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth" }
+google-signin = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "google-signin" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebase-messaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

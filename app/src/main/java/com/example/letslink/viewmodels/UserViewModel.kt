@@ -63,6 +63,7 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                     email = email,
                     password = hashedPassword,
                     dateOfBirth = dateOfBirth,
+                    fcmToken = null
 
                     )
 

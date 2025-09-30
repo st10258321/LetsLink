@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.androidx.room.common.jvm)
 
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -125,5 +126,9 @@ dependencies {
     //for firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
+    implementation(libs.google.signin)
+    implementation(libs.firebase.messaging)
 
 }
