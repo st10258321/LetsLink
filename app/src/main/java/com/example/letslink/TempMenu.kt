@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.letslink.activities.EventVoting
-import com.example.letslink.activities.GroupDetails
 import com.example.letslink.fragments.FriendMapFragment
 
 class TempMenu : AppCompatActivity() {
@@ -36,10 +35,7 @@ class TempMenu : AppCompatActivity() {
         }
 
 
-        buttonGroupFunctions.setOnClickListener {
-            val intent = Intent(this, GroupDetails::class.java)
-            startActivity(intent)
-        }
+
 
 
     }

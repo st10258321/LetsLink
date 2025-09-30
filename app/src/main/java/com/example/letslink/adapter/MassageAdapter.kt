@@ -1,47 +1,57 @@
-package com.example.letslink.adapter
+package com.example.letslink.adapters
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import android.view.Gravity
-import com.example.letslink.model.Message
 import com.example.letslink.R
 
-class MessageAdapter(private val messages: List<Message>) :
-    RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+class MessagesAdapter(private val messages: List<Pair<Boolean, String>>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvMessage: TextView = itemView.findViewById(R.id.tvMessage)
+    private val TYPE_SENT = 1
+    private val TYPE_RECEIVED = 2
+
+    override fun getItemViewType(position: Int): Int {
+        return if (messages[position].first) TYPE_SENT else TYPE_RECEIVED
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_message, parent, false)
-        return MessageViewHolder(view)
-    }
-
-    override fun getItemCount(): Int = messages.size
-
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        val message = messages[position]
-        holder.tvMessage.text = message.text
-
-        // Correctly casting to LinearLayout.LayoutParams
-        val params = holder.tvMessage.layoutParams as LinearLayout.LayoutParams
-        if (message.isMine) {
-            // Align to the right for sender
-            params.gravity = Gravity.END
-            holder.tvMessage.setBackgroundResource(R.drawable.bg_message_sent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_SENT) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_message_sent, parent, false)
+            SentMessageViewHolder(view)
         } else {
-            // Align to the left for receiver
-            params.gravity = Gravity.START
-            holder.tvMessage.setBackgroundResource(R.drawable.bg_message_received)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_message_received, parent, false)
+            ReceivedMessageViewHolder(view)
         }
-        holder.tvMessage.layoutParams = params
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val messageText = messages[position].second
+        if (holder is SentMessageViewHolder) holder.bind(messageText)
+        else if (holder is ReceivedMessageViewHolder) holder.bind(messageText)
+    }
+
+    override fun getItemCount() = messages.size
+
+    class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val messageBody: TextView = itemView.findViewById(R.id.text_message_body)
+        fun bind(text: String) {
+            messageBody.text = text
+        }
+    }
+
+    class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val messageBody: TextView = itemView.findViewById(R.id.text_message_body)
+        fun bind(text: String) {
+            messageBody.text = text
+        }
     }
 }
+
 
 
 
