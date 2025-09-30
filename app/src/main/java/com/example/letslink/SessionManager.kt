@@ -14,7 +14,7 @@ open class SessionManager(context: Context) {
         private const val KEY_USER_NAME = "user_name"
     }
 
-    fun saveUserSession(userId: UUID, email: String, name: String) {
+    fun saveUserSession(userId: String, email: String, name: String) {
         val editor = sharedPreferences.edit()
         editor.putString(KEY_USER_ID, userId.toString())
         editor.putString(KEY_USER_EMAIL, email)

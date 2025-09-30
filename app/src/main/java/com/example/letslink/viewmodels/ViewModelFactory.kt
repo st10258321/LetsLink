@@ -13,6 +13,10 @@ class ViewModelFactory(
         if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
             return UserViewModel(dao) as T
         }
+        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
+            return LoginViewModel(dao) as T
+        }
+
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

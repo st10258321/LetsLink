@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.API_related.UserDao
+import com.example.letslink.SessionManager
 import com.example.letslink.model.LoginEvent
 import com.example.letslink.model.LoginState
 import com.example.letslink.model.User
@@ -18,7 +19,8 @@ import java.security.MessageDigest
 class LoginViewModel(private val dao: UserDao) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
-    private var _loggedInUser: User? = null
+    var _loggedInUser: User? = null
+
 
     fun hasPass(hashPassword : String): String
     {
@@ -33,8 +35,8 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
     }
     fun onEvent(event: LoginEvent) {
         when (event) {
-            is LoginEvent.checkUsername -> {
-                _loginState.update { it.copy(username = event.username, errorMessage = null) }
+            is LoginEvent.checkEmail -> {
+                _loginState.update { it.copy(email = event.email, errorMessage = null) }
             }
             is LoginEvent.checkPassword -> {
                 _loginState.update { it.copy(password = event.password, errorMessage = null) }
@@ -47,11 +49,11 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
 
     private fun attemptLogin() {
         val state = loginState.value
-        Log.d("LoginViewModel", "Attempting login for user: ${state.username}")
+        Log.d("LoginViewModel", "Attempting login for user: ${state.email}")
 
-        if (state.username.isBlank()) {
-            _loginState.update { it.copy(errorMessage = "Username is required") }
-            Log.d("LoginViewModel", "Username is blank.")
+        if (state.email.isBlank()) {
+            _loginState.update { it.copy(errorMessage = "Email is required") }
+            Log.d("LoginViewModel", "Email is blank.")
             return
         }
 
@@ -65,11 +67,11 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
             _loginState.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                var user = dao.getUserByUsername(state.username)
+                var user = dao.getUserByEmail(state.email)
 
 
-                if (user == null && Patterns.EMAIL_ADDRESS.matcher(state.username).matches()) {
-                    user = dao.getUserByEmail(state.username)
+                if (user == null && Patterns.EMAIL_ADDRESS.matcher(state.email).matches()) {
+                    user = dao.getUserByEmail(state.email)
                     Log.d("LoginViewModel", "Initial username lookup failed. Attempting lookup by email.")
                 }
 
@@ -78,7 +80,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                     _loginState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Invalid username or password"
+                            errorMessage = "Invalid email or password"
                         )
                     }
                     return@launch
@@ -91,7 +93,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                     _loginState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Invalid username or password"
+                            errorMessage = "Invalid email or password"
                         )
                     }
                     return@launch
