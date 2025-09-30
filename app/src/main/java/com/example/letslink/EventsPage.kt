@@ -45,11 +45,19 @@ class EventsFragment : Fragment() {
         )
 
         eventAdapter = EventAdapter(dummyEvents) { event ->
-            // Handle event card click here
-            Toast.makeText(context, "Opening details for: ${event.title}", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to EventDetailsFragment
+            // Navigate to EventDetails fragment when an event card is clicked
+            val eventDetailsFragment = com.example.letslink.EventDetails.newInstance(
+                event.title,
+                event.associatedGroupName
+            )
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, eventDetailsFragment) // Make sure this is your container id
+                .addToBackStack(null)
+                .commit()
         }
         eventsRecyclerView.adapter = eventAdapter
+
     }
 }
 
