@@ -14,7 +14,7 @@ import com.example.letslink.fragments.GroupsFragment
 import com.example.letslink.fragments.HomeFragment
 import com.example.letslink.fragments.SettingsFragment
 import com.example.letslink.fragments.CreateGroupFragment
-import com.example.letslink.CreateCustomEventFragment // ⭐️ NEW IMPORT FOR CUSTOM EVENT
+import com.example.letslink.activities.CreateCustomEventFragment // ⭐️ NEW IMPORT FOR CUSTOM EVENT
 
 class HorizontalCoordinator : AppCompatActivity() {
 
