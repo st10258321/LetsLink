@@ -35,7 +35,8 @@ function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'D
  * 
  */
 app.post('/groups', (req, res) => {
-    const groupId = req.body.groupId;
+    // The mobile app is responsible for generating and sending the UUID here
+    const groupId = req.body.groupId; 
     
     const userId = req.body.userId || uuidv4(); 
     
@@ -45,26 +46,30 @@ app.post('/groups', (req, res) => {
         return res.status(400).json({ error: 'The request body must contain a "groupId" field.' });
     }
     
-    // Validation ensure the ID is unique
+    // Checks the Group ID already exists and returns the existing group information.
     if (groups[groupId]) {
-        console.log(`Group creation failed: Group ID already exists: ${groupId}`);
-        return res.status(409).json({ error: `Group ID '${groupId}' already exists.` });
+        console.log(`Group already exists: ${groupId}`);
+        return res.status(200).json(createGroupResponse(
+            groupId, 
+            groups[groupId].userId, 
+            groups[groupId].groupName, 
+            groups[groupId].description
+        ));
     }
 
-    // Initialize the group with details
+    //Initialise a new group with the old group details
     groups[groupId] = {
-        userId: userId,
-        groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
-        description: req.body.description || `Joined group : ${userId}.`,
-        members: [userId] 
+        userId: userId, // Stores the owner's ID
+        groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
+        description: req.body.description || `Joined group : ${userId}.`,
+        members: [userId] //tracks the orginal owner
     };
 
     console.log(`Created new group: ${groupId} (Owner: ${userId})`);
 
-    // Return the full group response
+    // Return the new group response with a 201 Created status.
     res.status(201).json(createGroupResponse(groupId, userId, groups[groupId].groupName, groups[groupId].description));
 });
-
 
 
 /**
@@ -89,6 +94,8 @@ app.post('/api/group/join', (req, res) => {
     if (!groupData.members.includes(userId)) {
         groupData.members.push(userId);
         console.log(`User ${userId} successfully joined group ${groupId}. Total members: ${groupData.members.length}`);
+
+        console.log("Current Group members:", groups[groupId]);
     } else {
         console.log(`User ${userId} is already a member of group ${groupId}.`);
     }
