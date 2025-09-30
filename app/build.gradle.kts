@@ -79,6 +79,7 @@ dependencies {
     // Extras
     implementation(libs.glide)
     implementation(libs.androidx.room.common.jvm)
+    implementation(libs.material3)
 
 
     // Testing

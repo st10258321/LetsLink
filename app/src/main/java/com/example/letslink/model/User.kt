@@ -6,11 +6,11 @@ import java.util.UUID
 
 @Entity
 data class User (
-    @PrimaryKey(autoGenerate = true)
-    var userId : Int =0,
+    @PrimaryKey
+    var userId : UUID = UUID.randomUUID(),
     var firstName :String,
     val password : String,
     val dateOfBirth : String,
     var email: String,
-    var fcmToken: String?
+    var fcmToken: String? = null
 )

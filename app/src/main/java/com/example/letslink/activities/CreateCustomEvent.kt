@@ -8,10 +8,15 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.letslink.R
-
+import android.widget.EditText
+import androidx.compose.material3.DatePicker
+import com.example.letslink.SessionManager
+import android.widget.DatePicker
+import com.example.letslink.online_database.fb_EventsRepo
 
 class CreateCustomEventFragment : Fragment() {
-
+private lateinit var sessionManager : SessionManager
+private lateinit var repo : fb_EventsRepo
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,17 +28,39 @@ class CreateCustomEventFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        sessionManager = SessionManager(requireContext())
+        repo = fb_EventsRepo()
         // Back Button Logic
         val backArrow: ImageView = view.findViewById(R.id.backArrow)
         backArrow.setOnClickListener {
-
             parentFragmentManager.popBackStack()
         }
+        val userid = sessionManager.getUserId()
 
         val createGroupButton = view.findViewById<View>(R.id.btnCreateEvent)
         createGroupButton.setOnClickListener {
+            val eventTitle = view.findViewById<EditText>(R.id.etEventTitle).text.toString()
+            val eventDescription = view.findViewById<EditText>(R.id.etEventDescription).text.toString()
+            val eventStartTime = view.findViewById<EditText>(R.id.etStartTime).text.toString()
+            val eventEndTime = view.findViewById<EditText>(R.id.etEndTime).text.toString()
+            val eventLocation = view.findViewById<EditText>(R.id.etLocation).text.toString()
+            val datepicker = view.findViewById<DatePicker>(R.id.datePicker)
+            val day = datepicker.dayOfMonth
+            val month = datepicker.month + 1
+            val year = datepicker.year
+            val date = "$day/$month/$year"
+
+            repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date) { isComplete ->
+                if (isComplete) {
+                    Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                } else {
+                    Toast.makeText(context, "Event creation failed!", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             Toast.makeText(context, "Event creation initiated!", Toast.LENGTH_SHORT).show()
+
         }
 
 

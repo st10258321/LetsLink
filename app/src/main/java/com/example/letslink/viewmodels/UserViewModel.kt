@@ -63,8 +63,6 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                     email = email,
                     password = hashedPassword,
                     dateOfBirth = dateOfBirth,
-                    fcmToken = null
-
                     )
 
 
@@ -116,6 +114,9 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                 ) }
             }
         }
+    }
+    suspend fun getUserByEmail(email: String): User? {
+        return dao.getUserByEmail(email)
     }
     /*
     *  companion object {

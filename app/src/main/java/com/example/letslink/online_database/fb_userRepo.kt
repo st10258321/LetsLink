@@ -1,4 +1,5 @@
 package com.example.letslink.online_database
+import android.util.Log
 import com.example.letslink.model.User
 import com.google.firebase.analytics.analytics
 import com.google.firebase.auth.FirebaseAuthException
@@ -21,9 +22,12 @@ class fb_userRepo(
                     FirebaseMessaging.getInstance().token.addOnCompleteListener{tokenTask ->
                         if(tokenTask.isSuccessful){
                             user.fcmToken = tokenTask.result ?: ""
+                            Log.d("FCM Token", "FCM Token: ${user.fcmToken}")
+                        }else{
+                            Log.e("FCM Token", "Failed to get FCM token", tokenTask.exception)
                         }
                     }
-                database.child("users").child(uid!!).setValue(user)
+                database.child("users").child(user.userId.toString()).setValue(user)
                     .addOnCompleteListener{ task ->
                         if(task.isSuccessful){
                             callback(true,null,user)

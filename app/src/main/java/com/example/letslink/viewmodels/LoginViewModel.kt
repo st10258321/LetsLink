@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.API_related.UserDao
+import com.example.letslink.API_related.UUIDConverter
 import com.example.letslink.SessionManager
 import com.example.letslink.model.LoginEvent
 import com.example.letslink.model.LoginState
@@ -20,6 +21,7 @@ import java.security.MessageDigest
 
 class LoginViewModel(private val dao: UserDao) : ViewModel() {
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var uuidConverter : UUIDConverter
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
     var _loggedInUser: User? = null
@@ -54,7 +56,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
     }
     private fun siginInWithGoogle(idToken:String){
         _loginState.update{it.copy(isLoading = true, errorMessage = null)}
-
+        uuidConverter = UUIDConverter()
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         viewModelScope.launch{
             try{
@@ -67,7 +69,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                             val email = task.result.user?.email
 
                             if (name != null && email != null) {
-                                _loggedInUser?.userId = id?.toInt()!!
+                                _loggedInUser?.userId = uuidConverter.toUUID(id)!!
                                 _loggedInUser?.firstName = name
                                 _loggedInUser?.email = email
                             }

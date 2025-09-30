@@ -9,7 +9,7 @@ import kotlin.jvm.java
 import com.example.letslink.model.User
 import com.example.letslink.model.Group
 import com.example.letslink.API_related.UUIDConverter
-@Database(entities = [User::class,Group::class], version = 6, exportSchema = false)
+@Database(entities = [User::class,Group::class], version = 7, exportSchema = false)
 @TypeConverters(UUIDConverter::class)
 abstract class LetsLinkDB : RoomDatabase() {
 

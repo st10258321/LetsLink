@@ -17,6 +17,7 @@ class ViewModelFactory(
             return LoginViewModel(dao) as T
         }
 
+
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -9,9 +9,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.API_related.LetsLinkDB
 import com.example.letslink.R
 import com.example.letslink.model.User
@@ -20,6 +22,7 @@ import com.example.letslink.online_database.fb_userRepo
 import com.example.letslink.viewmodels.UserViewModel
 import com.google.android.material.button.MaterialButton
 import com.example.letslink.viewmodels.ViewModelFactory
+import kotlinx.coroutines.launch
 
 class RegisterPage : AppCompatActivity() {
     private lateinit var viewModel: UserViewModel
@@ -61,7 +64,7 @@ class RegisterPage : AppCompatActivity() {
             val password = txtpassword.text.toString().trim()
             val dateOfBirth = txtdateOfBirth.text.toString().trim()
             val confirmPassword = txtconfirmPassword.text.toString().trim()
-            val newUser = User(0,fName, password, dateOfBirth, email, null)
+
 
             if(fName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && dateOfBirth.isNotEmpty() && confirmPassword.isNotEmpty()){
                 try{
@@ -74,20 +77,31 @@ class RegisterPage : AppCompatActivity() {
                         viewModel.onEvent(UserEvent.setDateOfBirth(dateOfBirth))
                         viewModel.onEvent(UserEvent.createUser)
 
-                        Toast.makeText(this,"Account created successfully (locally)",Toast.LENGTH_SHORT).show()
+                        lifecycleScope.launch {
+                            viewModel.userState.collect { state ->
+                                if(state.isSuccess){
 
-                        //saving the user remotely on Firebase
+                                    val user = viewModel.getUserByEmail(email)
+                                    Log.d("RegisterPage", "Over here --- ${user?.userId}")
+                                    if(user!= null){
+                                        Toast.makeText(this@RegisterPage,"Account created successfully (locally)",Toast.LENGTH_SHORT).show()
+                                        val newUser = User(user.userId ,fName, password, dateOfBirth, email, null)
+                                        //saving the user remotely on Firebase
 
-                        fbUserRepo.register(newUser){ success, errorMessage, user ->
-                            if(success){
-                                Toast.makeText(this,"Account created successfully (remotely)",Toast.LENGTH_SHORT).show()
-                            }else{
-                                Toast.makeText(this,"Account creation failed: $errorMessage",Toast.LENGTH_SHORT).show()
+                                        fbUserRepo.register(newUser){ success, errorMessage, user ->
+                                            if(success){
+                                                Toast.makeText(this@RegisterPage,"Account created successfully (remotely)",Toast.LENGTH_SHORT).show()
+                                                val intent = Intent(this@RegisterPage, LoginPage::class.java)
+                                                startActivity(intent)
+                                            }else{
+                                                Toast.makeText(this@RegisterPage,"Account creation failed: $errorMessage",Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
+
+                                }
                             }
                         }
-                        val intent = Intent(this, LoginPage::class.java)
-                        startActivity(intent)
-
 
 
                     }else{
@@ -102,17 +116,7 @@ class RegisterPage : AppCompatActivity() {
                 Toast.makeText(this,"All fields are required",Toast.LENGTH_SHORT).show()
             }
 
-
-
-
         }
-
-
-
-
-
-
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
