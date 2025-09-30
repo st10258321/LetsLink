@@ -10,6 +10,8 @@ import com.example.letslink.SessionManager
 import com.example.letslink.model.LoginEvent
 import com.example.letslink.model.LoginState
 import com.example.letslink.model.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.security.MessageDigest
 
 class LoginViewModel(private val dao: UserDao) : ViewModel() {
+    private val firebaseAuth = FirebaseAuth.getInstance()
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
     var _loggedInUser: User? = null
@@ -44,9 +47,40 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
             LoginEvent.Login -> {
                 attemptLogin()
             }
+
+            is LoginEvent.GoogleLogin -> siginInWithGoogle(event.idToken)
+            is LoginEvent.LoginFailed -> _loginState.update{it.copy(errorMessage = event.message)}
         }
     }
+    private fun siginInWithGoogle(idToken:String){
+        _loginState.update{it.copy(isLoading = true, errorMessage = null)}
 
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        viewModelScope.launch{
+            try{
+                firebaseAuth.signInWithCredential(credential)
+                    .addOnCompleteListener{ task ->
+                        if(task.isSuccessful){
+                            _loginState.update{it.copy(isLoading = false, isSuccess = true, errorMessage = null)}
+                            val id = task.result.user?.uid
+                            val name = task.result.user?.displayName
+                            val email = task.result.user?.email
+
+                            if (name != null && email != null) {
+                                _loggedInUser?.userId = id?.toInt()!!
+                                _loggedInUser?.firstName = name
+                                _loggedInUser?.email = email
+                            }
+
+                        }else{
+                            _loginState.update{it.copy(isLoading = false, errorMessage = task.exception?.message)}
+                        }
+                    }
+            }catch(e:Exception){
+                _loginState.update{it.copy(isLoading = false, errorMessage = e.message)}
+            }
+        }
+    }
     private fun attemptLogin() {
         val state = loginState.value
         Log.d("LoginViewModel", "Attempting login for user: ${state.email}")

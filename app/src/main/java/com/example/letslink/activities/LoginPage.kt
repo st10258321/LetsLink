@@ -2,6 +2,7 @@ package com.example.letslink.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -20,17 +21,37 @@ import com.example.letslink.model.LoginEvent
 import com.example.letslink.nav.HorizontalCoordinator
 import com.example.letslink.viewmodels.LoginViewModel
 import com.example.letslink.viewmodels.ViewModelFactory
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 
 class LoginPage : AppCompatActivity() {
     private lateinit var loginViewModel : LoginViewModel
-
-    private val sessionManager: SessionManager = SessionManager(this)
+    //google sign in
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 1001
+    private lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
+        sessionManager = SessionManager(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login_page)
+
+        //configure google sign in
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        findViewById<SignInButton>(R.id.google_sign_in_btn).setOnClickListener {
+            val siginInIntent = googleSignInClient.signInIntent
+            startActivityForResult(siginInIntent, RC_SIGN_IN)
+        }
+
         var dao : UserDao = LetsLinkDB.getDatabase(applicationContext).userDao()
         val factory = ViewModelFactory(dao)
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
@@ -57,7 +78,15 @@ class LoginPage : AppCompatActivity() {
             loginViewModel.loginState.collect{ state ->
                 if(state.isSuccess){
                     //save session data on current user data
-                    sessionManager.saveUserSession(loginViewModel._loggedInUser!!.userId.toString(), loginViewModel._loggedInUser!!.email, loginViewModel._loggedInUser!!.firstName)
+                    try{
+                        sessionManager.saveUserSession(
+                            loginViewModel._loggedInUser!!.userId.toString(),
+                            loginViewModel._loggedInUser!!.email
+                            , loginViewModel._loggedInUser!!.firstName)
+                    }catch(e:Exception){
+                        Log.d("Session error", "error $e")
+                    }
+
                     Toast.makeText(this@LoginPage, "Login Successful", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@LoginPage, HorizontalCoordinator::class.java)
                     startActivity(intent)
@@ -81,6 +110,20 @@ class LoginPage : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == RC_SIGN_IN){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try{
+                val account = task.getResult(Exception::class.java)
+                loginViewModel.onEvent(LoginEvent.GoogleLogin(account.idToken!!))
+
+            }catch (e: Exception){
+                loginViewModel.onEvent(LoginEvent.LoginFailed("Google sign in failed"))
+            }
         }
     }
 }

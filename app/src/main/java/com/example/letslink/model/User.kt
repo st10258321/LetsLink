@@ -7,10 +7,10 @@ import java.util.UUID
 @Entity
 data class User (
     @PrimaryKey(autoGenerate = true)
-    val userId : Int =0,
-    val firstName :String,
+    var userId : Int =0,
+    var firstName :String,
     val password : String,
     val dateOfBirth : String,
-    val email: String,
+    var email: String,
     var fcmToken: String?
 )
