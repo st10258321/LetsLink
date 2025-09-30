@@ -1,47 +1,69 @@
-package com.example.letslink.adapter
+// MessagesAdapter.kt
+package com.example.letslink.adapters
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import android.view.Gravity
-import com.example.letslink.model.Message
 import com.example.letslink.R
+import com.example.letslink.models.ChatMessage
 
-class MessageAdapter(private val messages: List<Message>) :
-    RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+class MessagesAdapter(private val messages: MutableList<ChatMessage>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvMessage: TextView = itemView.findViewById(R.id.tvMessage)
+    private val TYPE_SENT = 1
+    private val TYPE_RECEIVED = 2
+
+    override fun getItemViewType(position: Int): Int {
+        return if (messages[position].isSent) TYPE_SENT else TYPE_RECEIVED
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_message, parent, false)
-        return MessageViewHolder(view)
-    }
-
-    override fun getItemCount(): Int = messages.size
-
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        val message = messages[position]
-        holder.tvMessage.text = message.text
-
-        // Correctly casting to LinearLayout.LayoutParams
-        val params = holder.tvMessage.layoutParams as LinearLayout.LayoutParams
-        if (message.isMine) {
-            // Align to the right for sender
-            params.gravity = Gravity.END
-            holder.tvMessage.setBackgroundResource(R.drawable.bg_message_sent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_SENT) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_message_sent, parent, false)
+            SentMessageViewHolder(view)
         } else {
-            // Align to the left for receiver
-            params.gravity = Gravity.START
-            holder.tvMessage.setBackgroundResource(R.drawable.bg_message_received)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_message_received, parent, false)
+            ReceivedMessageViewHolder(view)
         }
-        holder.tvMessage.layoutParams = params
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val message = messages[position]
+        if (holder is SentMessageViewHolder) holder.bind(message)
+        else if (holder is ReceivedMessageViewHolder) holder.bind(message)
+    }
+
+    override fun getItemCount() = messages.size
+
+    fun addMessage(message: ChatMessage) {
+        messages.add(message)
+        notifyItemInserted(messages.size - 1)
+    }
+
+    // ---- ViewHolders ----
+    class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val messageBody: TextView = itemView.findViewById(R.id.tvMessage)
+        private val messageTime: TextView = itemView.findViewById(R.id.tvTime)
+        private val messageSent: TextView = itemView.findViewById(R.id.tvSent)
+
+        fun bind(message: ChatMessage) {
+            messageBody.text = message.text
+            messageTime.text = message.time
+            messageSent.text = "Sent"
+        }
+    }
+
+    class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val messageBody: TextView = itemView.findViewById(R.id.tvMessage)
+        private val messageTime: TextView = itemView.findViewById(R.id.tvTime)
+
+        fun bind(message: ChatMessage) {
+            messageBody.text = message.text
+            messageTime.text = message.time
+        }
     }
 }
-
-
-

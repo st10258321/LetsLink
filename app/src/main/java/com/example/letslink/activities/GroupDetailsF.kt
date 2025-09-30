@@ -24,7 +24,7 @@ class GroupDetailsF : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val votingButton: LinearLayout = view.findViewById(R.id.btn_vote_on_events)
-
+        val startChatButton: LinearLayout = view.findViewById(R.id.btn_start_chat)
         val addTaskButton: LinearLayout = view.findViewById(R.id.btn_add_task)
 
         votingButton?.setOnClickListener {
@@ -32,6 +32,11 @@ class GroupDetailsF : Fragment() {
             val intent = Intent(requireContext(), EventVoting::class.java)
 
 
+            requireContext().startActivity(intent)
+        }
+
+        startChatButton.setOnClickListener {
+            val intent = Intent(requireContext(), GroupChatActivity::class.java)
             requireContext().startActivity(intent)
         }
 
