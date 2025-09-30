@@ -95,7 +95,7 @@ app.post('/api/group/join', (req, res) => {
         groupData.members.push(userId);
         console.log(`User ${userId} successfully joined group ${groupId}. Total members: ${groupData.members.length}`);
 
-        console.log("Current Group members:", groups[groupId] "UserId: " groups[userId]);
+        console.log("Current Group members:", groups[groupId], "UserId: ", groups[userId]);
     } else {
         console.log(`User ${userId} is already a member of group ${groupId}.`);
     }
