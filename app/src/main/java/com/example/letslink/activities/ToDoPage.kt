@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 
 import androidx.core.view.ViewCompat
 
@@ -24,6 +26,13 @@ class ToDoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Back Button Logic
+        val backArrow: ImageButton = view.findViewById(R.id.back_image_button)
+        backArrow.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

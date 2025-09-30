@@ -19,7 +19,8 @@
             android:paddingTop="24dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:paddingBottom="80dp"  android:gravity="center_horizontal">
+            android:paddingBottom="80dp"
+            android:gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="198dp"
