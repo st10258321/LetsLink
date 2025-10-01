@@ -73,9 +73,9 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                     try {
                         dao.upsertUser(user)
                         _userState.update { it.copy(
-                            firstName = fullName,
+                            firstName = "",
                             password = "",
-                            email = email,
+                            email = "",
                             dateOfBirth = "",
                             isSuccess = true,
                             errorMessage = null

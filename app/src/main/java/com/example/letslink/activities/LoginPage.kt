@@ -91,7 +91,7 @@ class LoginPage : AppCompatActivity() {
                     }
 
                     //save session data on current user data
-                    sessionManager.saveUserSession(state.userId, state.email, state.name)
+
                 }
             }
         }

@@ -48,15 +48,12 @@ private lateinit var auth : FirebaseAuth
             parentFragmentManager.popBackStack()
         }
 
-        try {
-            val sharedPref =
-                requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-             val userId = sharedPref.getString("KEY_USER_ID", null)
 
-            Log.d("CreateCustomEventFragment", "User ID: $userId")
-        }catch(e:Exception){
-            Log.d("CreateCustomEventFragment", "Exception: $e")
-        }
+        val sharedPref = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val userId = sharedPref.getString(SessionManager.KEY_USER_ID, null)
+
+        Log.d("CreateCustomEventFragment", "User ID: $userId")
+
 
 
         val createGroupButton = view.findViewById<View>(R.id.btnCreateEvent)
@@ -72,7 +69,7 @@ private lateinit var auth : FirebaseAuth
             val year = datepicker.year
             val date = "$day/$month/$year"
 
-            repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date, "userId2") { isComplete ->
+            repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date, userId!!) { isComplete ->
                 if (isComplete) {
                     Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()

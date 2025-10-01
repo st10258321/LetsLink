@@ -9,10 +9,10 @@ import androidx.core.content.edit
 open class SessionManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
     companion object {
-        private const val KEY_USER_ID = "user_id"
-        private const val KEY_IS_LOGGED_IN = "is_logged_in"
-        private const val KEY_USER_EMAIL = "user_email"
-        private const val KEY_USER_NAME = "user_name"
+        const val KEY_USER_ID = "user_id"
+         const val KEY_IS_LOGGED_IN = "is_logged_in"
+         const val KEY_USER_EMAIL = "user_email"
+         const val KEY_USER_NAME = "user_name"
     }
 
     fun saveUserSession(userId: String, email: String, name: String) {
@@ -22,7 +22,7 @@ open class SessionManager(context: Context) {
             putString(KEY_USER_NAME, name)
             putBoolean(KEY_IS_LOGGED_IN, true)
         }
-        Log.d("SessionManager", "User session saved: $userId, $email, $name")
+
     }
 
     open fun getUserId(): UUID? {
