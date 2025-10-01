@@ -2,11 +2,12 @@ package com.example.letslink
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import java.util.UUID
+import androidx.core.content.edit
 
 open class SessionManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-
     companion object {
         private const val KEY_USER_ID = "user_id"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
@@ -15,12 +16,13 @@ open class SessionManager(context: Context) {
     }
 
     fun saveUserSession(userId: String, email: String, name: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString(KEY_USER_ID, userId.toString())
-        editor.putString(KEY_USER_EMAIL, email)
-        editor.putString(KEY_USER_NAME, name)
-        editor.putBoolean(KEY_IS_LOGGED_IN, true)
-        editor.apply()
+        sharedPreferences.edit {
+            putString(KEY_USER_ID, userId.toString())
+            putString(KEY_USER_EMAIL, email)
+            putString(KEY_USER_NAME, name)
+            putBoolean(KEY_IS_LOGGED_IN, true)
+        }
+        Log.d("SessionManager", "User session saved: $userId, $email, $name")
     }
 
     open fun getUserId(): UUID? {

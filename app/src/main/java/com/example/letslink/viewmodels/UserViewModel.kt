@@ -1,5 +1,6 @@
 package com.example.letslink.viewmodels
 
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.API_related.UserDao
 import com.example.letslink.model.UserState
 
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModelProvider
+import com.example.letslink.SessionManager
 import com.example.letslink.model.User
 import com.example.letslink.model.UserEvent
 import org.kotlincrypto.hash.sha3.SHA3_512
@@ -19,6 +21,7 @@ import java.security.MessageDigest
 
 class UserViewModel(private val dao: UserDao) : ViewModel() {
     private val _userState = MutableStateFlow(UserState())
+    private lateinit var sessionManager : SessionManager
     val userState = _userState.asStateFlow()
 
     fun hasPass(hashPassword : String): String
@@ -30,6 +33,7 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
     }
     fun onEvent(event: UserEvent)
     {
+
         when(event){
             is UserEvent.deleteUser -> {
                 viewModelScope.launch{
@@ -65,14 +69,13 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                     dateOfBirth = dateOfBirth,
                     )
 
-
                 viewModelScope.launch {
                     try {
                         dao.upsertUser(user)
                         _userState.update { it.copy(
-                            firstName = "",
+                            firstName = fullName,
                             password = "",
-                            email = "",
+                            email = email,
                             dateOfBirth = "",
                             isSuccess = true,
                             errorMessage = null

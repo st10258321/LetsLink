@@ -25,7 +25,7 @@ class GroupDetailsF : Fragment() {
 
         val votingButton: LinearLayout = view.findViewById(R.id.btn_vote_on_events)
         val startChatButton: LinearLayout = view.findViewById(R.id.btn_start_chat)
-        val addTaskButton: LinearLayout = view.findViewById(R.id.btn_add_task)
+
 
         votingButton?.setOnClickListener {
 
@@ -40,14 +40,7 @@ class GroupDetailsF : Fragment() {
             requireContext().startActivity(intent)
         }
 
-        addTaskButton?.setOnClickListener {
-            val createTaskFragment = CreateTaskFragment()
 
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, createTaskFragment)
-                .addToBackStack(null)
-                .commit()
-        }
     }
 
 }

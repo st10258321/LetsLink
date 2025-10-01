@@ -1,6 +1,8 @@
 package com.example.letslink.activities
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +14,20 @@ import android.widget.EditText
 import androidx.compose.material3.DatePicker
 import com.example.letslink.SessionManager
 import android.widget.DatePicker
+import androidx.lifecycle.lifecycleScope
+import com.example.API_related.LetsLinkDB
+import com.example.API_related.UserDao
+import com.example.letslink.model.User
 import com.example.letslink.online_database.fb_EventsRepo
+import com.example.letslink.online_database.fb_userRepo
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class CreateCustomEventFragment : Fragment() {
 private lateinit var sessionManager : SessionManager
 private lateinit var repo : fb_EventsRepo
+private lateinit var userDao : UserDao
+private lateinit var auth : FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,11 +42,22 @@ private lateinit var repo : fb_EventsRepo
         sessionManager = SessionManager(requireContext())
         repo = fb_EventsRepo()
         // Back Button Logic
+
         val backArrow: ImageView = view.findViewById(R.id.backArrow)
         backArrow.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        val userid = sessionManager.getUserId()
+
+        try {
+            val sharedPref =
+                requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+             val userId = sharedPref.getString("KEY_USER_ID", null)
+
+            Log.d("CreateCustomEventFragment", "User ID: $userId")
+        }catch(e:Exception){
+            Log.d("CreateCustomEventFragment", "Exception: $e")
+        }
+
 
         val createGroupButton = view.findViewById<View>(R.id.btnCreateEvent)
         createGroupButton.setOnClickListener {
@@ -50,7 +72,7 @@ private lateinit var repo : fb_EventsRepo
             val year = datepicker.year
             val date = "$day/$month/$year"
 
-            repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date) { isComplete ->
+            repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date, "userId2") { isComplete ->
                 if (isComplete) {
                     Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()

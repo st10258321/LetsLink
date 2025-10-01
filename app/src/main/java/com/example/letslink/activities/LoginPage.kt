@@ -20,6 +20,7 @@ import com.example.letslink.activities.ResetPasswordPage
 import com.example.letslink.model.LoginEvent
 import com.example.letslink.nav.HorizontalCoordinator
 import com.example.letslink.viewmodels.LoginViewModel
+import com.example.letslink.viewmodels.UserViewModel
 import com.example.letslink.viewmodels.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 
 class LoginPage : AppCompatActivity() {
     private lateinit var loginViewModel : LoginViewModel
+    private lateinit var userViewModel : UserViewModel
     //google sign in
     private lateinit var googleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = 1001
@@ -55,7 +57,7 @@ class LoginPage : AppCompatActivity() {
         var dao : UserDao = LetsLinkDB.getDatabase(applicationContext).userDao()
         val factory = ViewModelFactory(dao)
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
-
+        userViewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
         val hyperLinkForgotPassword: TextView = findViewById(R.id.forgot_password_link)
         val signInButton: MaterialButton = findViewById(R.id.sign_in_button)
         val signUpLink: TextView = findViewById(R.id.sign_up_link)
@@ -64,11 +66,11 @@ class LoginPage : AppCompatActivity() {
             val intent = Intent(this, ResetPasswordPage::class.java)
             startActivity(intent)
         }
-
+        var searchEmail = ""
         signInButton.setOnClickListener {
             val email = findViewById<TextView>(R.id.email_edit_text).text.toString()
             val password = findViewById<TextView>(R.id.password_edit_text).text.toString()
-
+            searchEmail = email
             loginViewModel.onEvent(LoginEvent.checkEmail(email))
             loginViewModel.onEvent(LoginEvent.checkPassword(password))
             loginViewModel.onEvent(LoginEvent.Login)
@@ -76,25 +78,25 @@ class LoginPage : AppCompatActivity() {
         }
         lifecycleScope.launch{
             loginViewModel.loginState.collect{ state ->
-                if(state.isSuccess){
-                    //save session data on current user data
-                    try{
-                        sessionManager.saveUserSession(
-                            loginViewModel._loggedInUser!!.userId.toString(),
-                            loginViewModel._loggedInUser!!.email
-                            , loginViewModel._loggedInUser!!.firstName)
-                    }catch(e:Exception){
-                        Log.d("Session error", "error $e")
+                if(state.isSuccess) {
+                    val user = userViewModel.getUserByEmail(state.email)
+                    if(user != null){
+                        sessionManager.saveUserSession(user.userId, user.email, user.firstName)
+                        Log.d("LoginPage", "User session saved: ${user.userId}, ${user.email}, ${user.firstName}")
+                        val intent = Intent(this@LoginPage, HorizontalCoordinator::class.java)
+                        startActivity(intent)
+                    }else{
+                        Toast.makeText(this@LoginPage, "User not found", Toast.LENGTH_SHORT).show()
+                        Log.d("LoginPage", "User not found")
                     }
 
-                    Toast.makeText(this@LoginPage, "Login Successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@LoginPage, HorizontalCoordinator::class.java)
-                    startActivity(intent)
-                }else if(state.errorMessage != null){
-                    Toast.makeText(this@LoginPage, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    //save session data on current user data
+                    sessionManager.saveUserSession(state.userId, state.email, state.name)
                 }
             }
         }
+
+
 
         signUpLink.setOnClickListener {
             val intent = Intent(this, RegisterPage::class.java)
@@ -119,6 +121,7 @@ class LoginPage : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try{
                 val account = task.getResult(Exception::class.java)
+
                 loginViewModel.onEvent(LoginEvent.GoogleLogin(account.idToken!!))
 
             }catch (e: Exception){

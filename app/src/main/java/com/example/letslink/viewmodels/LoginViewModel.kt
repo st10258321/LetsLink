@@ -58,29 +58,47 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
         _loginState.update{it.copy(isLoading = true, errorMessage = null)}
         uuidConverter = UUIDConverter()
         val credential = GoogleAuthProvider.getCredential(idToken, null)
+
         viewModelScope.launch{
-            try{
-                firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener{ task ->
-                        if(task.isSuccessful){
-                            _loginState.update{it.copy(isLoading = false, isSuccess = true, errorMessage = null)}
-                            val id = task.result.user?.uid
-                            val name = task.result.user?.displayName
-                            val email = task.result.user?.email
+            try {
+                    firebaseAuth.signInWithCredential(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                _loginState.update {
+                                    it.copy(
+                                        email = task.result.user?.email!!,
+                                        isLoading = false,
+                                        isSuccess = true,
+                                        errorMessage = null
+                                    )
+                                }
+                                val id = task.result.user?.uid
+                                val name = task.result.user?.displayName
+                                val email = task.result.user?.email
 
-                            if (name != null && email != null) {
-                                _loggedInUser?.userId = id!!
-                                _loggedInUser?.firstName = name
-                                _loggedInUser?.email = email
+                                if (name != null && email != null) {
+                                    _loggedInUser?.userId = id!!
+                                    _loggedInUser?.firstName = name
+                                    _loggedInUser?.email = email
+
+
+                                }
+
+                            } else {
+                                _loginState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        errorMessage = task.exception?.message
+                                    )
+                                }
                             }
-
-                        }else{
-                            _loginState.update{it.copy(isLoading = false, errorMessage = task.exception?.message)}
                         }
-                    }
-            }catch(e:Exception){
-                _loginState.update{it.copy(isLoading = false, errorMessage = e.message)}
-            }
+
+                } catch (e:Exception){
+                    _loginState.update { it.copy(isLoading = false, errorMessage = e.message) }
+                Log.d("LoginViewModel", "Google login failed with exception: ${e.message}")
+                }
+
         }
     }
     private fun attemptLogin() {
@@ -139,6 +157,9 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                 _loggedInUser = user
                 _loginState.update {
                     it.copy(
+                        userId = user.userId,
+                        name = user.firstName,
+                        email = user.email,
                         isLoading = false,
                         isSuccess = true,
                         errorMessage = null
