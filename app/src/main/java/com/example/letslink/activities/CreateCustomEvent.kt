@@ -40,7 +40,7 @@ private lateinit var auth : FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
-        repo = fb_EventsRepo()
+        repo = fb_EventsRepo(requireContext())
         // Back Button Logic
 
         val backArrow: ImageView = view.findViewById(R.id.backArrow)
@@ -56,8 +56,8 @@ private lateinit var auth : FirebaseAuth
 
 
 
-        val createGroupButton = view.findViewById<View>(R.id.btnCreateEvent)
-        createGroupButton.setOnClickListener {
+        val createEventBtn = view.findViewById<View>(R.id.btnCreateEvent)
+        createEventBtn.setOnClickListener {
             val eventTitle = view.findViewById<EditText>(R.id.etEventTitle).text.toString()
             val eventDescription = view.findViewById<EditText>(R.id.etEventDescription).text.toString()
             val eventStartTime = view.findViewById<EditText>(R.id.etStartTime).text.toString()
@@ -72,7 +72,10 @@ private lateinit var auth : FirebaseAuth
             repo.createEvent(eventTitle, eventDescription, eventLocation, eventStartTime, eventEndTime, date, userId!!) { isComplete ->
                 if (isComplete) {
                     Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack()
+                    view.postDelayed({
+                        parentFragmentManager.popBackStack()
+                    },1000)
+
                 } else {
                     Toast.makeText(context, "Event creation failed!", Toast.LENGTH_SHORT).show()
                 }

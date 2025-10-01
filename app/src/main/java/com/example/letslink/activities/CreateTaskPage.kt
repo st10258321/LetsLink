@@ -9,11 +9,23 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.letslink.R
 
 class CreateTaskFragment : Fragment() {
+    companion object {
+        private const val ARG_EVENT_ID = "eventId"
 
+        fun newInstance(eventId: String): CreateTaskFragment {
+            val fragment = CreateTaskFragment()
+            val bundle = Bundle().apply {
+                putString(ARG_EVENT_ID, eventId)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
     // 1. Inflate the layout
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,7 +38,8 @@ class CreateTaskFragment : Fragment() {
     // 2. Set up back navigation logic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val eventId = arguments?.getString(ARG_EVENT_ID)
+        Toast.makeText(requireContext(), "Event ID: $eventId", Toast.LENGTH_SHORT).show()
         // Find the back arrow button assuming the ID is 'backArrow' in the layout
         val backArrow: ImageView = view.findViewById(R.id.backArrow)
 

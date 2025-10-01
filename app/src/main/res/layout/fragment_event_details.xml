@@ -114,7 +114,7 @@
                     android:id="@+id/txt_event_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📅 Friday, Oct 4, 2025"
+                    android:text="📅 "
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="4dp"/>
@@ -123,7 +123,7 @@
                     android:id="@+id/txt_event_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⏰ 10:00 AM"
+                    android:text="⏰ "
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="4dp"/>
@@ -132,7 +132,7 @@
                     android:id="@+id/txt_event_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📍 Boardroom 2A"
+                    android:text="📍 "
                     android:textSize="14sp"
                     android:textColor="@color/white"/>
             </LinearLayout>
