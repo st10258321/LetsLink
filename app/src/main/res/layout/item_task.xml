@@ -21,6 +21,7 @@
                 android:layout_marginBottom="8dp">
 
                 <TextView
+                    android:id="@+id/task_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -30,6 +31,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/task_due_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Due: Friday 14th Feb"
@@ -44,6 +46,7 @@
 
             <!-- Task Title -->
             <TextView
+                android:id="@+id/task_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Get Snacks for the trip"
@@ -60,6 +63,7 @@
                 android:layout_marginBottom="4dp">
 
                 <TextView
+                    android:id="@+id/task_for"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="For:"
@@ -84,6 +88,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/task_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Time:"

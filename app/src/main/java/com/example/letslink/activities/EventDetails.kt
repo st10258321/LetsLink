@@ -78,15 +78,17 @@ class EventDetails : Fragment() {
         }
         val addTaskButton: LinearLayout = view.findViewById(R.id.btn_add_task)
         //val userIdString = sharedPreferences.getString("KEY_USER_ID", null) ?: return
-
+        val eventId = arguments?.getString(ARG_EVENT_ID)
         val todoButton = view.findViewById<View>(R.id.btn_view_todo)
         todoButton.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(R.id.fragment_container, ToDoFragment()) // make sure this matches your container id
-                addToBackStack(null) // so user can go back
-            }
+            val toDoFragment = ToDoFragment.newInstance(eventId!!)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, toDoFragment) // make sure this matches your container id
+                .addToBackStack(null) // so user can go back
+                .commit()
+
         }
-        val eventId = arguments?.getString(ARG_EVENT_ID)
+
         addTaskButton?.setOnClickListener {
             val createTaskFragment = CreateTaskFragment.newInstance(eventId!!)
 

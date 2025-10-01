@@ -12,9 +12,30 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.letslink.R
+import com.example.letslink.adapter.TaskAdapter
+import com.example.letslink.model.Task
+import com.example.letslink.online_database.fb_TaskRepo
+import com.google.android.gms.tasks.Tasks
+import kotlinx.coroutines.launch
 
 class ToDoFragment : Fragment() {
+    companion object{
+        private const val ARG_EVENT_ID = "eventId"
+        fun newInstance(eventId : String) : ToDoFragment{
+            val fragment = ToDoFragment()
+            val bundle = Bundle().apply {
+                putString(ARG_EVENT_ID, eventId)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+    private lateinit var taskAdapter : TaskAdapter
+    private lateinit var fb_Taskrepo: fb_TaskRepo
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +47,22 @@ class ToDoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var tasks : List<Task> = emptyList()
+        val eventId = arguments?.getString(ARG_EVENT_ID)
+        val recyclerView : RecyclerView = view.findViewById(R.id.tasks_recyclerView)
+
+
+        //initialize an empty adapter
+        taskAdapter = TaskAdapter(emptyList(),{})
+        recyclerView.adapter = taskAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        fb_Taskrepo = fb_TaskRepo(requireContext())
+        lifecycleScope.launch{
+            tasks = fb_Taskrepo.getTasksForEvent(eventId!!)
+            taskAdapter.updateTasks(tasks)
+            recyclerView.adapter = taskAdapter
+        }
 
         // Back Button Logic
         val backArrow: ImageButton = view.findViewById(R.id.back_image_button)
