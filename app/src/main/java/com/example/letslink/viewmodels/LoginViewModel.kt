@@ -69,7 +69,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                             val email = task.result.user?.email
 
                             if (name != null && email != null) {
-                                _loggedInUser?.userId = uuidConverter.toUUID(id)!!
+                                _loggedInUser?.userId = id!!
                                 _loggedInUser?.firstName = name
                                 _loggedInUser?.email = email
                             }

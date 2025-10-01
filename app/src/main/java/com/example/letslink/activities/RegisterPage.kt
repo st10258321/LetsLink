@@ -82,7 +82,7 @@ class RegisterPage : AppCompatActivity() {
                                 if(state.isSuccess){
 
                                     val user = viewModel.getUserByEmail(email)
-                                    Log.d("RegisterPage", "Over here --- ${user?.userId}")
+                                    Log.d("RegisterPage", "Over here --- ${user?.userId} --- ${user?.firstName}")
                                     if(user!= null){
                                         Toast.makeText(this@RegisterPage,"Account created successfully (locally)",Toast.LENGTH_SHORT).show()
                                         val newUser = User(user.userId ,fName, password, dateOfBirth, email, null)

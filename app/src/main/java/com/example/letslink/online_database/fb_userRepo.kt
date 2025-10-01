@@ -17,8 +17,6 @@ class fb_userRepo(
         auth.createUserWithEmailAndPassword(user.email,user.password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
-                    val firebaseUser = auth.currentUser
-                    val uid = firebaseUser?.uid
                     FirebaseMessaging.getInstance().token.addOnCompleteListener{tokenTask ->
                         if(tokenTask.isSuccessful){
                             user.fcmToken = tokenTask.result ?: ""
@@ -26,18 +24,25 @@ class fb_userRepo(
                         }else{
                             Log.e("FCM Token", "Failed to get FCM token", tokenTask.exception)
                         }
+
+                        database.child("users")
+                            .child(user.userId.toString())
+                            .setValue(user)
+                            .addOnCompleteListener{ task ->
+                                if(task.isSuccessful){
+                                    callback(true,null,user)
+                                }else{
+                                    callback(false,task.exception?.message,null)
+                                }
+                            }
                     }
-                database.child("users").child(user.userId.toString()).setValue(user)
-                    .addOnCompleteListener{ task ->
-                        if(task.isSuccessful){
-                            callback(true,null,user)
-                        }else{
-                            callback(false,task.exception?.message,null)
-                        }
-                    }
+
                 }else{
                     callback(false,task.exception?.message,null)
-                    }
+                }
+
+
+
             }
 
     }

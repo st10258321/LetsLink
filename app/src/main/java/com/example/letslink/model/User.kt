@@ -7,10 +7,10 @@ import java.util.UUID
 @Entity
 data class User (
     @PrimaryKey
-    var userId : UUID = UUID.randomUUID(),
+    var userId :String = UUID.randomUUID().toString(),
     var firstName :String,
     val password : String,
     val dateOfBirth : String,
     var email: String,
-    var fcmToken: String? = null
+    var fcmToken: String? = ""
 )
