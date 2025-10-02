@@ -1,14 +1,35 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const admin = require('firebase-admin'); 
+let db;
+try {
+    const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    const databaseURL = process.env.FIREBASE_DATABASE_URL; 
 
+    if (!serviceAccountString || !databaseURL) {
+        throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL environment variable.");
+    }
+
+    const serviceAccount = JSON.parse(serviceAccountString);
+
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: databaseURL // Use the URL from .env that is from render
+    });
+
+    db = admin.database(); // <-- get real time db ref
+    console.log("Firebase Realtime Database initialized successfully.");
+} catch (e) {
+    console.error("Firebase Initialization Failed:", e.message);
+ 
+}
 const app = express();
 const port = process.env.PORT || 3000;
 
 const host = 'letslink-api.onrender.com'; 
 app.use(express.json());
 
-const groups = {};
-//route handler tells the api how to behave when the link has been clicked or put on the browser
+//const groups = {};
 app.get('/', (req, res) => {
     res.status(200).json({ 
         status: "OK", 
