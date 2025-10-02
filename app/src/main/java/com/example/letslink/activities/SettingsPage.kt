@@ -24,6 +24,7 @@ import com.example.letslink.local_database.UserDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment(),android.location.LocationListener {
@@ -117,31 +118,32 @@ class SettingsFragment : Fragment(),android.location.LocationListener {
             0f,
             this
         )
-        sheduleLocationUpdate()
+        scheduleLocationUpdate()
     }
     private fun disableLocationSharing(){
         isSharing = false
         handler.removeCallbacksAndMessages(null)
         locationManager.removeUpdates(this)
     }
-    private fun sheduleLocationUpdate(){
-        handler.postDelayed(object : Runnable{
-            override fun run() {
-                if(isSharing){
-                    val lastKnown = if(
-                        ActivityCompat.checkSelfPermission(
-                            requireContext(),Manifest.permission.ACCESS_FINE_LOCATION
+    private fun scheduleLocationUpdate() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            while (isSharing) {
+                val lastKnown =
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
-                    ){
+                    ) {
                         locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    }else
-                        null
-                    lastKnown?.let{updateLocation(it)}
-                    handler.postDelayed(this,60_000)
-                }
+                    } else null
+
+                lastKnown?.let { updateLocation(it) }
+
+                delay(60_000) // wait 1 min
             }
-        },0)
+        }
     }
+
     private fun updateLocation(location : Location){
         val user = auth.currentUser
         if(user != null){
