@@ -3,25 +3,24 @@ const { v4: uuidv4 } = require('uuid');
 const admin = require('firebase-admin'); 
 let db;
 try {
-    const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+   const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
     const databaseURL = process.env.FIREBASE_DATABASE_URL; 
 
     if (!serviceAccountString || !databaseURL) {
         throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL environment variable.");
     }
 
-    const serviceAccount = JSON.parse(serviceAccountString);
-
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: databaseURL 
+    const serviceAccount = JSON.parse(serviceAccountString); 
+        admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: databaseURL 
     });
 
     db = admin.database(); 
     console.log("Firebase Realtime Database initialized successfully.");
 } catch (e) {
     console.error("Firebase Initialization Failed:", e.message);
- 
+    throw e;
 }
 const app = express();
 const port = process.env.PORT || 3000;
