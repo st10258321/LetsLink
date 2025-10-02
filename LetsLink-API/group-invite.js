@@ -14,10 +14,10 @@ try {
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      databaseURL: databaseURL // Use the URL from .env that is from render
+      databaseURL: databaseURL 
     });
 
-    db = admin.database(); // <-- get real time db ref
+    db = admin.database(); 
     console.log("Firebase Realtime Database initialized successfully.");
 } catch (e) {
     console.error("Firebase Initialization Failed:", e.message);
@@ -56,9 +56,8 @@ function createGroupResponse(groupId, groupData) {
 
 /**
  * Endpoint to create a new group. It now requires the groupId to be sent by the app
- * 
- */
-app.post('/groups', async (req, res) => { '
+ * */
+app.post('/groups', async (req, res) => { 
     const groupId = req.body.groupId;
     const userId = req.body.userId || uuidv4();
 
@@ -73,32 +72,32 @@ app.post('/groups', async (req, res) => { '
 
     if (snapshot.exists()) {
         console.log(`Group already exists in Firebase: ${groupId}`);
-        const data = snapshot.val(); // Get the existing data
-        eturn res.status(200).json(createGroupResponse(groupId, data)); 
+        const data = snapshot.val(); 
+        return res.status(200).json(createGroupResponse(groupId, data)); 
     }
 
     // produces  new group data
     const newGroupData = {
-        userId: userId, // Stores the owner's ID
+        userId: userId, 
         groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
         description: req.body.description || `Joined group : ${userId}.`,
-        members: [userId] // tracks the orginal owner
+        members: [userId] 
     };
 
     // Write the new group data to Firebase
     await groupRef.set(newGroupData);
 
-  eturn res.status(200).json(createGroupResponse(groupId, data)); 
 
-    // Return the new group response .
-    res.status(201).json(createGroupResponse(groupId, userId, newGroupData.groupName, newGroupData.description));
+    return res.status(201).json(createGroupResponse(groupId, newGroupData)); 
+
+  
 });
 
 
 /**
  * Endpoint for a user to join a group using the invite link/group ID.
  */
-app.post('/api/group/join', (req, res) => {
+app.post('/api/group/join', async (req, res) => {
     const { groupId, userId } = req.body;
 
     // Validation
@@ -106,39 +105,52 @@ app.post('/api/group/join', (req, res) => {
         return res.status(400).json({ error: 'Missing groupId or userId in request body.' });
     }
 
-    const groupData = groups[groupId];
+    // Read group  from Firebase 
+    const groupRef = db.ref('groups/' + groupId);
+    const snapshot = await groupRef.once('value');
 
-    if (!groupData) {
+    if (!snapshot.exists()) {
         console.log(`Join failed: Group ID ${groupId} not found.`);
         return res.status(404).json({ error: `Group ID ${groupId} not found.` });
+    }
+
+    let groupData = snapshot.val(); 
+    
+    // Ensure members is an array for safe use
+    if (!Array.isArray(groupData.members)) {
+        groupData.members = [];
     }
 
     // Add user to members list only if not in the group
     if (!groupData.members.includes(userId)) {
         groupData.members.push(userId);
+        
+        // Update the members array in Firebase
+        await groupRef.update({ members: groupData.members }); 
+
         console.log(`User ${userId} successfully joined group ${groupId}. Total members: ${groupData.members.length}`);
 
-        console.log("Current Group members:", groups[groupId], "UserId: ", userId);
+
     } else {
         console.log(`User ${userId} is already a member of group ${groupId}.`);
     }
 
     // Return the complete Group table required by the mobile app's repository
-    res.status(200).json(createGroupResponse(
-        groupId, 
-        groupData.userId, 
-        groupData.groupName, 
-        groupData.description
-    ));
+
+    return res.status(200).json(createGroupResponse(groupId, groupData));
 });
 
 /**
  * Endpoint for checking if a group link is valid
  */
-app.get('/invite/:groupId', (req, res) => {
+app.get('/invite/:groupId', async (req, res) => {
     const groupId = req.params.groupId;
     
-    if (groups[groupId]) {
+    // Read group data from Firebase instead of volatile memory
+    const groupRef = db.ref('groups/' + groupId);
+    const snapshot = await groupRef.once('value');
+
+    if (snapshot.exists()) {
         console.log(`Group ID ${groupId} successfully processed via invite link.`);
         res.status(200).send(`Group link for ID ${groupId} is valid and ready for processing.`);
     } else {
