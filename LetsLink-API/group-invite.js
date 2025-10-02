@@ -36,9 +36,12 @@ app.get('/', (req, res) => {
         message: "API is running successfully" 
     });
 });
-
-function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'Default Group Name', description = 'A new collaborative group.') {
-    const members = groups[groupId]?.members || [userId];
+//creates the group both in firebase and room
+function createGroupResponse(groupId, groupData) {
+    const userId = groupData?.userId || 'server-owner-id';
+    const groupName = groupData?.groupName || 'Default Group Name';
+    const description = groupData?.description || 'A new collaborative group.';
+    const members = groupData?.members || [userId];
 
     return {
         groupId: groupId,
@@ -55,41 +58,40 @@ function createGroupResponse(groupId, userId = 'server-owner-id', groupName = 'D
  * Endpoint to create a new group. It now requires the groupId to be sent by the app
  * 
  */
-app.post('/groups', (req, res) => {
-    // The mobile app is responsible for generating and sending the UUID here
-    const groupId = req.body.groupId; 
-    
-    const userId = req.body.userId || uuidv4(); 
-    
-    // Validation to ensure the app provided the ID
+app.post('/groups', async (req, res) => { '
+    const groupId = req.body.groupId;
+    const userId = req.body.userId || uuidv4();
+
     if (!groupId) {
         console.error('Group creation failed: Missing groupId in request body.');
         return res.status(400).json({ error: 'The request body must contain a "groupId" field.' });
     }
-    
-    // Checks the Group ID already exists and returns the existing group information.
-    if (groups[groupId]) {
-        console.log(`Group already exists: ${groupId}`);
-        return res.status(200).json(createGroupResponse(
-            groupId, 
-            groups[groupId].userId, 
-            groups[groupId].groupName, 
-            groups[groupId].description
-        ));
+
+    // Check if the group already exists in Firebase
+    const groupRef = db.ref('groups/' + groupId);
+    const snapshot = await groupRef.once('value'); 
+
+    if (snapshot.exists()) {
+        console.log(`Group already exists in Firebase: ${groupId}`);
+        const data = snapshot.val(); // Get the existing data
+        eturn res.status(200).json(createGroupResponse(groupId, data)); 
     }
 
-    //Initialise a new group with the old group details
-    groups[groupId] = {
+    // produces  new group data
+    const newGroupData = {
         userId: userId, // Stores the owner's ID
         groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
         description: req.body.description || `Joined group : ${userId}.`,
-        members: [userId] //tracks the orginal owner
+        members: [userId] // tracks the orginal owner
     };
 
-    console.log(`Created new group: ${groupId} (Owner: ${userId})`);
+    // Write the new group data to Firebase
+    await groupRef.set(newGroupData);
 
-    // Return the new group response with a 201 Created status.
-    res.status(201).json(createGroupResponse(groupId, userId, groups[groupId].groupName, groups[groupId].description));
+  eturn res.status(200).json(createGroupResponse(groupId, data)); 
+
+    // Return the new group response .
+    res.status(201).json(createGroupResponse(groupId, userId, newGroupData.groupName, newGroupData.description));
 });
 
 
