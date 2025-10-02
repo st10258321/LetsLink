@@ -15,8 +15,8 @@ import androidx.compose.material3.DatePicker
 import com.example.letslink.SessionManager
 import android.widget.DatePicker
 import androidx.lifecycle.lifecycleScope
-import com.example.API_related.LetsLinkDB
-import com.example.API_related.UserDao
+import com.example.letslink.local_database.LetsLinkDB
+import com.example.letslink.local_database.UserDao
 import com.example.letslink.model.User
 import com.example.letslink.online_database.fb_EventsRepo
 import com.example.letslink.online_database.fb_userRepo

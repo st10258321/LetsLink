@@ -1,7 +1,7 @@
 package com.example.letslink.viewmodels
 
 import androidx.core.content.ContentProviderCompat.requireContext
-import com.example.API_related.UserDao
+import com.example.letslink.local_database.UserDao
 import com.example.letslink.model.UserState
 
 

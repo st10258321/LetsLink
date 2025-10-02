@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.API_related.LetsLinkDB
+import com.example.letslink.local_database.LetsLinkDB
 import com.example.letslink.R
 import com.example.letslink.model.User
 import com.example.letslink.model.UserEvent

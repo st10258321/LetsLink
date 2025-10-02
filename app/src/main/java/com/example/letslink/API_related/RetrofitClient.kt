@@ -2,6 +2,7 @@ package com.example.letslink.API_related
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.letslink.API_related.LetsLinkAPI
 
 /**
  * object to configure and provide the Retrofit client and API services.
@@ -20,7 +21,7 @@ object RetrofitClient {
             .build()
     }
 
-//    val letsLinkAPI: LetsLinkApi by lazy {
-//        retrofit.create(LetsLinkApi::class.java)
-//    }
+    val letsLinkAPI: LetsLinkAPI by lazy {
+        retrofit.create(LetsLinkAPI::class.java)
+    }
 }

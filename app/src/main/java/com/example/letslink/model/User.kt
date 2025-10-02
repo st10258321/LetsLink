@@ -12,5 +12,6 @@ data class User (
     val password : String,
     val dateOfBirth : String,
     var email: String,
-    var fcmToken: String? = ""
+    var fcmToken: String? = "",
+    var liveLocation: String? = ""
 )

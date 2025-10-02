@@ -4,8 +4,12 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
+        android:name="com.example.letslink.API_related.MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,6 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_config"
         android:theme="@style/Theme.LetsLink">
         <activity
             android:name=".GroupDetailsF"
@@ -57,6 +62,9 @@
         <activity
             android:name=".activities.RegisterPage"
             android:exported="false" />
+        <activity
+            android:name=".fragments.CreateGroup"
+            />
         <activity
             android:name=".activities.LoginPage"
             android:exported="false" />

@@ -3,8 +3,8 @@ package com.example.letslink.online_database
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.example.API_related.LetsLinkDB
-import com.example.API_related.UserDao
+import com.example.letslink.local_database.LetsLinkDB
+import com.example.letslink.local_database.UserDao
 import com.example.letslink.model.Event
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

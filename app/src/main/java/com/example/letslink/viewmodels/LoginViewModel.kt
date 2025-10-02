@@ -5,7 +5,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.API_related.UserDao
+import com.example.letslink.local_database.UserDao
 import com.example.letslink.API_related.UUIDConverter
 import com.example.letslink.SessionManager
 import com.example.letslink.model.LoginEvent

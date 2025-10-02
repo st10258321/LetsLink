@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
     app:cardBackgroundColor="@color/orange_primary"
@@ -40,7 +41,28 @@
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end"/>
-
+            <TextView
+                android:id="@+id/noteDescriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="group placeholder."/>
+            <TextView
+                android:id="@+id/inviteLinkTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:textColor="@color/green"
+                android:textStyle="italic"
+                android:maxLines="1"
+                android:ellipsize="start"
+                tools:text="http://10.0.2.2:3000/invite/a923-34..." />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

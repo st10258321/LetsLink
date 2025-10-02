@@ -2,7 +2,7 @@ package com.example.letslink.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.API_related.UserDao
+import com.example.letslink.local_database.UserDao
 
 class ViewModelFactory(
     private val dao: UserDao
