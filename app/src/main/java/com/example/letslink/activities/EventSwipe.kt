@@ -2,6 +2,7 @@ package com.example.letslink.activities
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -25,22 +26,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.letslink.R
+import com.example.letslink.model.EventVoting_m
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
 @Composable
-fun EventVotingScreen() {
-    val posters = listOf(R.drawable.poster1, R.drawable.poster2, R.drawable.poster3)
-    val context = LocalContext.current
+fun EventVotingScreen(events:List<EventVoting_m>, groupId: String, userId: String) {
+        val context = LocalContext.current
 
     EventSwipeDeck(
-        posters = posters,
-        onSwipeLeft = { _ -> Toast.makeText(context, "Disliked!", Toast.LENGTH_SHORT).show() },
-        onSwipeRight = { _ -> Toast.makeText(context, "Liked!", Toast.LENGTH_SHORT).show() }
+        events = events,
+        onSwipeLeft ={ event ->
+            saveVote(groupId, event.eventId, userId,"dislike")
+            Toast.makeText(context, "You disliked ${event.title}", Toast.LENGTH_SHORT).show()
+        },
+        onSwipeRight = { event ->
+            saveVote(groupId, event.eventId, userId,"like")
+            Toast.makeText(context, "You liked ${event.title}", Toast.LENGTH_SHORT).show()
+        }
     )
 }
 
+fun saveVote(groupId: String, eventId: String, userId: String, vote: String) {
+    val dbRef = FirebaseDatabase.getInstance()
+        .getReference("group_voting")
+        .child(groupId)
+        .child("events")
+        .child(eventId)
+        .child("votes")
+        .child(userId)
+    dbRef.setValue(vote)
+}
+
 @Composable
-fun EventCard(posterRes: Int, modifier: Modifier = Modifier) {
+fun EventCard(event : EventVoting_m, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -48,29 +67,30 @@ fun EventCard(posterRes: Int, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.elevatedCardElevation(8.dp)
     ) {
-        Image(
-            painter = painterResource(posterRes),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+        ){
+            Text(text = event.title,fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = event.description, fontSize = 16.sp)
+        }
     }
 }
 
 @Composable
 fun EventSwipeDeck(
-    posters: List<Int>,
-    onSwipeLeft: (Int) -> Unit,
-    onSwipeRight: (Int) -> Unit
+    events: List<EventVoting_m>,
+    onSwipeLeft: (EventVoting_m) -> Unit,
+    onSwipeRight: (EventVoting_m) -> Unit
 ) {
     var topIndex by remember { mutableStateOf(0) }
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val dragOffset = remember { mutableStateOf(0f) }
     val offsetX = remember { Animatable(0f) }
-    val screenWidth = context.resources.displayMetrics.widthPixels.toFloat()
-
-    Crossfade(targetState = topIndex >= posters.size) { done ->
+    val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels.toFloat()
+    val context = LocalContext.current
+    Crossfade(targetState = topIndex >= events.size) { done ->
         if (done) {
             // DONE SCREEN
             Box(
@@ -115,11 +135,11 @@ fun EventSwipeDeck(
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                posters.asReversed().forEachIndexed { index, poster ->
-                    if (index < posters.size - topIndex) {
-                        val isTop = index == posters.size - topIndex - 1
+                events.asReversed().forEachIndexed { index, event ->
+                    if (index < events.size - topIndex) {
+                        val isTop = index == events.size - topIndex - 1
                         EventCard(
-                            posterRes = poster,
+                            event = event,
                             modifier = Modifier
                                 .graphicsLayer {
                                     translationX = if (isTop) offsetX.value + dragOffset.value else 0f
@@ -143,7 +163,7 @@ fun EventSwipeDeck(
                     // Animate card off screen smoothly
                     scope.launch {
                         offsetX.animateTo(screenWidth, animationSpec = tween(300))
-                        onSwipeRight(posters[topIndex])
+                        onSwipeRight(events[topIndex])
                         topIndex++
                         dragOffset.value = 0f
                         offsetX.snapTo(0f)
@@ -151,7 +171,7 @@ fun EventSwipeDeck(
                 } else if (dragOffset.value < -300) {
                     scope.launch {
                         offsetX.animateTo(-screenWidth, animationSpec = tween(300))
-                        onSwipeLeft(posters[topIndex])
+                        onSwipeLeft(events[topIndex])
                         topIndex++
                         dragOffset.value = 0f
                         offsetX.snapTo(0f)

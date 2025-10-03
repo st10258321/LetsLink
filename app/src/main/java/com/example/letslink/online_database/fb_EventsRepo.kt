@@ -15,7 +15,7 @@ class fb_EventsRepo(context: Context) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().reference
     private  val userDao : UserDao = LetsLinkDB.getDatabase(context).userDao()
-    fun createEvent(title:String, description:String, location:String, startTime:String, endTime:String, date:String,userid : String , callback :(Boolean) -> Unit){
+    fun createEvent(title:String, description:String, location:String, startTime:String, endTime:String, date:String,userid : String,groups : List<String> , callback :(Boolean) -> Unit){
         val eventId = database.child("events").push().key ?: ""
         val event =
             Event(eventId, userid, title, description, location, startTime, endTime, date)

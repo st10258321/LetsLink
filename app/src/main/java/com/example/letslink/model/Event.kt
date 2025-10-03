@@ -9,4 +9,5 @@ data class Event(
     var startTime: String= "",
     var endTime: String= "",
     var date: String= "",
+    var groups: List<String>? = emptyList()
 )

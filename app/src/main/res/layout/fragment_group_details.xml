@@ -379,30 +379,6 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/btn_add_task"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/rec_outline_black"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_horizontal"
-                    android:minHeight="48dp"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:id="@+id/txt_add_task"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add Task"
-                        android:textColor="#F44A22"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/btn_vote_on_events"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
