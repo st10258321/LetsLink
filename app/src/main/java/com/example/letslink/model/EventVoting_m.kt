@@ -5,5 +5,6 @@ import kotlinx.parcelize.Parcelize
 data class EventVoting_m (
     val eventId : String = "",
     val title: String = "",
-    val description : String = ""
+    val description : String = "",
+    val groups : List<String> = emptyList(),
 ) : Parcelable

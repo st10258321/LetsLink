@@ -19,6 +19,7 @@ import com.example.letslink.API_related.MyApp
 import com.example.letslink.R
 import com.example.letslink.SessionManager
 import com.example.letslink.activities.GroupChatActivity
+import com.example.letslink.activities.GroupDetailsF
 import com.example.letslink.adapter.GroupAdapter
 import com.example.letslink.local_database.GroupEvent
 import com.example.letslink.viewmodels.GroupViewModel
@@ -94,10 +95,16 @@ class GroupsFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = GroupAdapter(
             onGroupClick = { note ->
-                val intent = Intent(requireContext(), GroupChatActivity::class.java).apply {
-                    putExtra("NOTE_ID", note.groupId.toString())
+                val fragment = GroupDetailsF().apply {
+                    arguments = Bundle().apply {
+                        putString("groupId", note.groupId.toString())
+                    }
                 }
-                startActivity(intent)
+
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment) // use your container id
+                    .addToBackStack(null) // so you can go back
+                    .commit()
             },
             onGroupDelete = { note ->
                 viewModel.onEvent(GroupEvent.deleteNotes(note))

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.letslink.model.Event
 import com.example.letslink.model.EventVoting_m
 
 class EventVoting : ComponentActivity() {

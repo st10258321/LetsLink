@@ -3,19 +3,29 @@ package com.example.letslink.activities
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.example.letslink.R
+import com.example.letslink.SessionManager
 
 import com.example.letslink.fragments.CreateTaskFragment
+import com.example.letslink.local_database.GroupDao
+import com.example.letslink.local_database.LetsLinkDB
 import com.example.letslink.model.Event
+import com.example.letslink.model.Group
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -45,10 +55,13 @@ class EventDetails : Fragment() {
             return fragment
             }
     }
+    private val selectedGroupIds = mutableListOf<String>()
+    private val groupList = mutableListOf<Group>()
     //private val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var auth : FirebaseAuth
+    private lateinit var groupDao: GroupDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,16 +82,44 @@ class EventDetails : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
+        groupDao = LetsLinkDB.getDatabase(requireContext()).groupDao()
         val name = auth.currentUser?.displayName
+        val sharedPref = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val userId = sharedPref.getString(SessionManager.KEY_USER_ID, null)
+        val eventId = arguments?.getString(ARG_EVENT_ID)
         // Back Button Logic
         val backArrow: ImageButton = view.findViewById(R.id.back_image_button)
         backArrow.setOnClickListener {
 
             parentFragmentManager.popBackStack()
         }
+        val tvSelectedGroups = view.findViewById<TextView>(R.id.tvSelectedGroups)
+        tvSelectedGroups.setOnClickListener {
+            showGroupSelectionDialog()
+        }
+        //getting group names and id's from database
+        lifecycleScope.launch{
+            groupDao.getNotesByUserId(userId!!).collect{ groups ->
+                groupList.clear()
+                groupList.addAll(groups)
+                Log.d("GroupList", groupList.count().toString())
+            }
+        }
+        //adding the current event being viewed to different groups
+        val btnAddToGroups: Button = view.findViewById(R.id.btnAddToGroups)
+        btnAddToGroups.setOnClickListener {
+            val dbRef = FirebaseDatabase.getInstance().getReference("events")
+                dbRef.child(eventId!!).child("groups").setValue(selectedGroupIds).addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Event added to groups", Toast.LENGTH_SHORT).show()
+                    tvSelectedGroups.setText("Select Groups")
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to add event to groups", Toast.LENGTH_SHORT).show()
+                }
+        }
+
         val addTaskButton: LinearLayout = view.findViewById(R.id.btn_add_task)
         //val userIdString = sharedPreferences.getString("KEY_USER_ID", null) ?: return
-        val eventId = arguments?.getString(ARG_EVENT_ID)
+
         val todoButton = view.findViewById<View>(R.id.btn_view_todo)
         todoButton.setOnClickListener {
             val toDoFragment = ToDoFragment.newInstance(eventId!!)
@@ -118,6 +159,39 @@ class EventDetails : Fragment() {
         eventDescription.text = description
         eventTitle.text = title
         eventHost.text = name
+    }
+    private fun showGroupSelectionDialog() {
+        val groupName = groupList.map { it.groupName }.toTypedArray()
+        val checkedItems = BooleanArray(groupList.size) { i ->
+            selectedGroupIds.contains(groupList[i].groupId.toString())
+        }
+
+        val builder = android.app.AlertDialog.Builder(requireContext())
+        builder.setTitle("Select Groups")
+        builder.setMultiChoiceItems(groupName, checkedItems) { _, which, isChecked ->
+            val group = groupList[which]
+            if (isChecked) {
+                if (!selectedGroupIds.contains(group.groupId.toString())) {
+                    selectedGroupIds.add(group.groupId.toString())
+                }
+            } else {
+                selectedGroupIds.remove(group.groupId.toString())
+            }
+        }
+        builder.setPositiveButton("OK") { dialog, _ ->
+            val selectedName = groupList.filter { selectedGroupIds.contains(it.groupId.toString()) }
+                .map { it.groupName }
+
+            val tvSelectedGroups = view?.findViewById<TextView>(R.id.tvSelectedGroups)
+            if (selectedName.isEmpty()) {
+                tvSelectedGroups?.setText("Select Groups")
+            } else {
+                tvSelectedGroups?.setText(selectedName.toString())
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 
 //    companion object {

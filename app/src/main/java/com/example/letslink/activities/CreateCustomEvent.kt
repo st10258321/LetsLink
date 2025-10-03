@@ -62,9 +62,12 @@ class CreateCustomEventFragment : Fragment() {
         repo = fb_EventsRepo(requireContext())
 
         lifecycleScope.launch{
-            val groups = groupDao.getNotesByUserId(userId!!)
-            groupList.clear()
-            groupList.addAll(groups as Collection<Group>)
+            groupDao.getNotesByUserId(userId!!).collect{ groups ->
+                groupList.clear()
+                groupList.addAll(groups)
+                Log.d("GroupList", groupList.count().toString())
+            }
+
         }
         // Back Button Logic
 

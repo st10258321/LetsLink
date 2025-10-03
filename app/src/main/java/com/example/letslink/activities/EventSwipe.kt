@@ -1,6 +1,7 @@
 package com.example.letslink.activities
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.Crossfade
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.letslink.R
+import com.example.letslink.model.Event
 import com.example.letslink.model.EventVoting_m
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
@@ -33,7 +35,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun EventVotingScreen(events:List<EventVoting_m>, groupId: String, userId: String) {
         val context = LocalContext.current
-
+    Toast.makeText(context, "Group ID: $groupId", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "User ID: $userId", Toast.LENGTH_SHORT).show()
+    Log.d("EventVotingScreen", "Events: $events")
     EventSwipeDeck(
         events = events,
         onSwipeLeft ={ event ->
