@@ -30,6 +30,11 @@ const port = process.env.PORT || 3000;
 const host = 'letslink-api.onrender.com'; 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log(`[GLOBAL REQUEST RECEIVED]: ${req.method} ${req.url}`);
+    next(); // Allows the request to continue 
+});
+
 //const groups = {};
 app.get('/', (req, res) => {
     res.status(200).json({ 
