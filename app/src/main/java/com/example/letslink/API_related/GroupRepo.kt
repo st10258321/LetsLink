@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.example.letslink.API_related
 import com.example.letslink.local_database.GroupDao
 import com.example.letslink.SessionManager
@@ -100,7 +100,7 @@ class GroupRepo(
         }
     }
 }
-=======
+
 //package com.example.API_related
 //import com.example.letslink.SessionManager
 //import com.example.letslink.model.Group
@@ -198,4 +198,4 @@ class GroupRepo(
 //        }
 //    }
 //}
->>>>>>> 9237e8e7e1fad812e738c7a171b31f55112fc8b5
+
