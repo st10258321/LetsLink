@@ -6,6 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.letslink.*
 import com.example.letslink.fragments.AccountFragment
 import com.example.letslink.fragments.EventsFragment
@@ -28,6 +30,21 @@ class HorizontalCoordinator : AppCompatActivity() {
         setContentView(R.layout.activity_horizontal_coordinator)
 
         bottomNavBar = findViewById(R.id.bottomNavBar)
+
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNavBar) { bar, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Keep original height, just add bottom inset
+            bar.setPadding(
+                bar.paddingLeft,
+                bar.paddingTop,
+                bar.paddingRight,
+                systemBars.bottom
+            )
+
+            // Let insets propagate
+            insets
+        }
 
         // Make sure navbar is always visible from the start
         bottomNavBar.visibility = View.VISIBLE

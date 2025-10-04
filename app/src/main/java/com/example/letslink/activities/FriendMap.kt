@@ -40,11 +40,23 @@ class FriendMapFragment : Fragment(), OnMapReadyCallback {
         val view = inflater.inflate(R.layout.fragment_friend_map, container, false)
 
         // Handle system insets for full-screen experience
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Only apply top inset to back button and zoom buttons, let map fill entire screen
-            view.findViewById<ImageButton>(R.id.back_button).setPadding(12, systemBars.top + 12, 12, 12)
-            view.findViewById<View>(R.id.zoom_buttons).setPadding(12, systemBars.top + 12, 12, 12)
+
+            // Apply top padding to controls
+            view.findViewById<ImageButton>(R.id.back_button)
+                .setPadding(12, systemBars.top + 12, 12, 12)
+            view.findViewById<View>(R.id.zoom_buttons)
+                .setPadding(12, systemBars.top + 12, 12, 12)
+
+            v.setPadding(
+                v.paddingLeft,
+                v.paddingTop,
+                v.paddingRight,
+                systemBars.bottom
+            )
+
+            // Pass insets down
             insets
         }
 
