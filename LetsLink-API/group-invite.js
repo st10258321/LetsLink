@@ -7,7 +7,7 @@ try {
     const databaseURL = process.env.FIREBASE_DATABASE_URL; 
 
     if (!serviceAccountString || !databaseURL) {
-        throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL environment variable.");
+        throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL .env variable.");
     }
 
     const serviceAccount = JSON.parse(serviceAccountString); 
@@ -18,7 +18,7 @@ try {
     });
 
     db = admin.database(); 
-    console.log("Firebase Realtime Database initialized successfully.");
+    console.log("Firebase Database initialized.");
 } catch (e) {
     // log that makes Render show the specific error.
     console.error("FATAL: Firebase Initialization Failed. Details:", e.message);
@@ -157,6 +157,67 @@ app.get('/invite/:groupId', async (req, res) => {
     } else {
         console.log(`Failed attempt to process invalid group ID: ${groupId}.`);
         res.status(404).send('Invalid group invitation link.');
+    }
+});
+
+/**
+ * Endpoint to  generate a group invite link to a specific  user.
+ *
+ * */
+app.post('/invite/specificUser', async (req, res) => {
+    // 1. Destructure data: Using 'userId' as the recipient's ID
+    const { groupId, userId, groupName, description } = req.body;
+
+    // 2. Validation
+    if (!groupId || !userId) {
+        console.error('Invite assignment failed: Missing groupId or userId.');
+        // Ensure the error message is clear about the missing fields
+        return res.status(400).json({ 
+            error: 'The request body must contain groupId and userId.' 
+        });
+    }
+
+    // checks that the group Id exists in the 'groups' table on firebase
+    const groupRef = db.ref('groups/' + groupId);
+    const groupSnapshot = await groupRef.once('value');
+
+    if (!groupSnapshot.exists()) {
+        console.log(`Invite assignment failed: Group ID ${groupId} not found.`);
+        return res.status(404).json({ error: `Group ID ${groupId} not found.` });
+    }
+    
+    // The inviteLink is the groupId itself, as per the existing API structure
+    // inivitelink 'inviteToken'
+    const inviteLink = groupId; 
+
+    // 3 stored on the recipient's profile
+    const inviteData = {
+        groupId: groupId,
+        // Use the passed values, let the client send defaults if necessary
+        groupName: groupName, 
+        description: description, 
+        // This is the personalized link/token Person B will use to join
+        inviteLink: inviteLink 
+    };
+
+    // Firebase write to the to whoever is invited  list
+    // formatted like users/{recipientUserId}/receivedInvites/{groupId}
+    const userInvitesRef = db.ref(`users/${userId}/receivedInvites/${groupId}`);
+
+    try {
+        await userInvitesRef.set(inviteData);
+        console.log(`Invite for ${groupId} successfully assigned to user ${userId}.`);
+        
+        // 5. Success 
+        return res.status(200).json({ 
+            status: 'Invite assigned successfully', 
+            invitedUser: inviteData
+        });
+    } catch (error) {
+        console.error("Firebase error during invite :", error);
+        return res.status(500).json({ 
+            error: 'Failed to assign invite due to  error.' 
+        });
     }
 });
 
