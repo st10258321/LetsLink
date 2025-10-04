@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.commit
 import com.example.letslink.R
+import com.example.letslink.fragments.FriendMapFragment
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -46,12 +47,16 @@ class EventDetails : Fragment() {
 
         val todoButton = view.findViewById<View>(R.id.btn_view_todo)
         todoButton.setOnClickListener {
+            // Get eventId from fragment arguments
+            val eventId = arguments?.getString("eventId") ?: ""
+
+            // Navigate to FriendMapFragment
+            val friendMapFragment = FriendMapFragment.newInstance(eventId)
             parentFragmentManager.commit {
-                replace(R.id.fragment_container, ToDoFragment()) // make sure this matches your container id
-                addToBackStack(null) // so user can go back
+                replace(R.id.fragment_container, friendMapFragment)
+                addToBackStack("friendMap")
             }
-        }
-    }
+        }}
 
     companion object {
         @JvmStatic
