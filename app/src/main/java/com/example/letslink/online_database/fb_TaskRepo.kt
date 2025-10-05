@@ -28,6 +28,19 @@ class fb_TaskRepo(context: Context)  {
             callback(false, "User not logged in")
         }
     }
+    fun updateTaskStatus(task: Task) {
+        val updates = mapOf<String, Any>("taskStatus" to task.taskStatus)
+
+        db.child("tasks").child(task.taskId).updateChildren(updates).addOnCompleteListener {
+            if(it.isSuccessful){
+                Log.d("fb_TaskRepo", "Task status updated successfully")
+            }else{
+                Log.d("fb_TaskRepo", "Failed to update task status")
+            }
+
+        }
+    }
+
      suspend fun getTasksForEvent(eventId: String) : List<Task> {
          var tasks = mutableListOf<Task>()
         val snapshot = db.child("tasks")

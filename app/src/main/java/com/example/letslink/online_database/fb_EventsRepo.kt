@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class fb_EventsRepo(context: Context) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -53,5 +55,21 @@ class fb_EventsRepo(context: Context) {
         }
 
         return events
+    }
+    suspend fun getEventById(eventId : String) : Event? = suspendCoroutine{ cont ->
+        val dbRef = FirebaseDatabase.getInstance().getReference("events").child(eventId)
+
+        dbRef.get().addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                val snapshot = task.result
+                val event = snapshot.getValue(Event::class.java)
+                cont.resume(event)
+            }else{
+                cont.resume(null)
+            }
+
+        }
+
+
     }
 }

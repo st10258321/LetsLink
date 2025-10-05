@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:paddingBottom="70dp"
+    android:paddingBottom="14dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -78,12 +78,14 @@
         android:layout_width="386dp"
         android:layout_height="285dp"
         android:layout_margin="12dp"
+        android:layout_marginBottom="70dp"
         android:background="@android:color/transparent"
         android:clipToOutline="true"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        >
 
         <!-- Blurred background view -->
         <View
@@ -98,7 +100,9 @@
             android:layout_width="match_parent"
             android:layout_height="290dp"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="8dp"
+            tools:layout_editor_absoluteX="12dp"
+            tools:layout_editor_absoluteY="358dp">
 
             <!-- Friend 1 -->
             <LinearLayout
@@ -281,5 +285,8 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,4 +7,5 @@ data class Task (
     var taskDescription: String = "",
     var taskDuration: String = "",
     var dueDate: String = "",
+    var taskStatus: String = "pending",
 )

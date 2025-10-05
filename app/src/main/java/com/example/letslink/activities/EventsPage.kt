@@ -86,13 +86,13 @@ class EventAdapter(
     class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // ⭐️ UPDATED IDs to match the provided XML card structure ⭐️
         // Note: The card XML uses group-related names for Event elements.
-        val eventImage: CircleImageView = itemView.findViewById(R.id.group_profile_image) // Card XML ID
+       // val eventImage: CircleImageView = itemView.findViewById(R.id.group_profile_image) // Card XML ID
         val eventTitleText: TextView = itemView.findViewById(R.id.event_name_text)      // Card XML ID
         val groupAssociatedText: TextView = itemView.findViewById(R.id.group_assotiated) // Card XML ID
         val groupEventsText: TextView = itemView.findViewById(R.id.group_events_text)    // Card XML ID (now shows tasks)
 
         fun bind(event: Event) {
-            eventImage.setImageResource(R.drawable.ic_launcher_foreground)
+         //   eventImage.setImageResource(R.drawable.ic_launcher_foreground)
             eventTitleText.text = event.title
             groupAssociatedText.text = event.description
             groupEventsText.text = 0.toString() // Placeholder for tasks, updated later

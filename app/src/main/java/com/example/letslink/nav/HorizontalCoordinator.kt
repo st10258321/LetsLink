@@ -196,41 +196,41 @@ class HorizontalCoordinator : AppCompatActivity() {
         // NEVER hide the navbar - always keep it visible
         bottomNavBar.visibility = View.VISIBLE
 
-        if (isMapVisible) {
-            // Shrink navbar to half size, move to very bottom (no margin), and keep fully opaque
-            bottomNavBar.animate()
-                .scaleY(0.5f)
-                .translationY(35f)  // Move down by half its height to stick to bottom edge
-                .alpha(1.0f)  // Keep fully opaque as per user preference
-                .setDuration(300)
-                .start()
-
-            // Scale icons back up to maintain their aspect ratio
-            navButtons.forEach { button ->
-                button.animate()
-                    .scaleY(2.0f)  // Compensate for the navbar's 0.5f scale
-                    .alpha(1.0f)   // Keep icons fully opaque
-                    .setDuration(300)
-                    .start()
-            }
-        } else {
-            // Full size, normal position, and opaque for other fragments
-            bottomNavBar.animate()
-                .scaleY(1.0f)
-                .translationY(0f)  // Return to normal position
-                .alpha(1.0f)  // Keep fully opaque
-                .setDuration(300)
-                .start()
-
-            // Return icons to normal scale and full opacity
-            navButtons.forEach { button ->
-                button.animate()
-                    .scaleY(1.0f)
-                    .alpha(1.0f)  // Keep icons fully opaque
-                    .setDuration(300)
-                    .start()
-            }
-        }
+//        if (isMapVisible) {
+//            // Shrink navbar to half size, move to very bottom (no margin), and keep fully opaque
+////            bottomNavBar.animate()
+////                .scaleY(0.5f)
+////                .translationY(35f)  // Move down by half its height to stick to bottom edge
+////                .alpha(1.0f)  // Keep fully opaque as per user preference
+////                .setDuration(300)
+////                .start()
+//
+//            // Scale icons back up to maintain their aspect ratio
+//            navButtons.forEach { button ->
+//                button.animate()
+//                    .scaleY(2.0f)  // Compensate for the navbar's 0.5f scale
+//                    .alpha(1.0f)   // Keep icons fully opaque
+//                    .setDuration(300)
+//                    .start()
+//            }
+//        } else {
+//            // Full size, normal position, and opaque for other fragments
+//            bottomNavBar.animate()
+//                .scaleY(1.0f)
+//                .translationY(0f)  // Return to normal position
+//                .alpha(1.0f)  // Keep fully opaque
+//                .setDuration(300)
+//                .start()
+//
+//            // Return icons to normal scale and full opacity
+//            navButtons.forEach { button ->
+//                button.animate()
+//                    .scaleY(1.0f)
+//                    .alpha(1.0f)  // Keep icons fully opaque
+//                    .setDuration(300)
+//                    .start()
+//            }
+//        }
     }
 
     private fun setButtonSelected(button: ImageButton, index: Int) {
@@ -247,14 +247,14 @@ class HorizontalCoordinator : AppCompatActivity() {
         }
 
         // Scale animation for selection - preserve Y scale if we're on map
-        val targetScaleY = if (currentIndex == 2) 2.2f else 1.1f  // Slightly larger for selection
-
-        button.animate()
-            .scaleX(1.1f)
-            .scaleY(targetScaleY)
-            .alpha(1.0f)  // Always full opacity
-            .setDuration(200)
-            .start()
+//        val targetScaleY = if (currentIndex == 2) 2.2f else 1.1f  // Slightly larger for selection
+//
+//        button.animate()
+//            .scaleX(1.1f)
+//            .scaleY(targetScaleY)
+//            .alpha(1.0f)  // Always full opacity
+//            .setDuration(200)
+//            .start()
     }
 
     private fun setButtonUnselected(button: ImageButton, index: Int) {
@@ -271,14 +271,14 @@ class HorizontalCoordinator : AppCompatActivity() {
         }
 
         // Scale back to normal - preserve Y scale if we're on map
-        val targetScaleY = if (currentIndex == 2) 2.0f else 1.0f
-
-        button.animate()
-            .scaleX(1.0f)
-            .scaleY(targetScaleY)
-            .alpha(1.0f)  // Always full opacity
-            .setDuration(200)
-            .start()
+//        val targetScaleY = if (currentIndex == 2) 2.0f else 1.0f
+//
+//        button.animate()
+//            .scaleX(1.0f)
+//            .scaleY(targetScaleY)
+//            .alpha(1.0f)  // Always full opacity
+//            .setDuration(200)
+//            .start()
     }
 
     // Method to get current fragment type (useful for fragments to know their state)

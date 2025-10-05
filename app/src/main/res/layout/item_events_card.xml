@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
+    android:id="@+id/event_card"
     app:cardBackgroundColor="@color/orange_primary"
     app:cardElevation="4dp">
 
@@ -15,14 +16,14 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/group_profile_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/due_date_badge"
-            app:civ_border_width="2dp"
-            app:civ_border_color="@color/white"
-            android:layout_marginEnd="16dp"/>
+<!--        <de.hdodenhof.circleimageview.CircleImageView-->
+<!--            android:id="@+id/group_profile_image"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:src="@drawable/due_date_badge"-->
+<!--            app:civ_border_width="2dp"-->
+<!--            app:civ_border_color="@color/white"-->
+<!--            android:layout_marginEnd="16dp"/>-->
 
         <LinearLayout
             android:layout_width="308dp"
@@ -80,6 +81,7 @@
 
         <ImageView
             android:layout_width="24dp"
+            android:id="@+id/arrow_icon"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_forward"
             app:tint="@color/white"

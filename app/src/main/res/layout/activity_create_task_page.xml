@@ -171,7 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:minHeight="24dp" />
+                android:minHeight="7dp" />
 
             <!-- Save button -->
             <Button
@@ -184,7 +184,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:minHeight="48dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="80dp"
                 android:elevation="2dp" />
 
         </LinearLayout>
