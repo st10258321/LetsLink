@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.text.equals
 
 class GroupViewModel (
     private val repository: GroupRepo,
@@ -98,6 +97,79 @@ class GroupViewModel (
                 ) }
             }
         }
+    }
+    fun joinGroupFromButton(groupId: String) {
+        val userID = sessionManager.getUserId()
+        if (userID == null) {
+            _noteState.update { it.copy(errorMessage = "Error: Cannot join group. User session is invalid.") }
+            return
+        }
+
+        viewModelScope.launch {
+            _noteState.update { it.copy(isLoading = true, errorMessage = null) }
+            try {
+                // Call the repository to join the group.
+                val response = repository.joinGroup(groupId, userID)
+
+                if (response != null) {
+                    _noteState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        isSuccess = true
+                    ) }
+                    println("User ${userID} successfully joined group ${groupId}.")
+                } else {
+                    _noteState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = "Failed to join group. Server response was null.",
+                        isSuccess = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _noteState.update { it.copy(
+                    isLoading = false,
+                    errorMessage = "Failed to join group due to: ${e.message}",
+                    isSuccess = false
+                ) }
+            }
+        }
+    }
+    fun sendPersonalizedInvite(recipientUsername: String, group: Group // Get group details from local Room DB or memory
+    ) {
+        viewModelScope.launch {
+
+            //  Call an api to convert the username to the Firebase User ID.
+            val actualRecipientId = try {
+                repository.getRecipientIdFromRoom(recipientUsername)
+            } catch (e: Exception) {
+                // Handle network or user not found error
+                _noteState.value = _noteState.value.copy(errorMessage = "User lookup failed for $recipientUsername.")
+                return@launch
+            }
+
+            //  Ensure the lookup for id is successful
+            if (actualRecipientId == null) {
+                _noteState.value = _noteState.value.copy(errorMessage = "User $recipientUsername not found.")
+                return@launch
+            }
+
+            // Call the backend API with the correct and verified ID
+            repository.assignInvite(
+                recipientId = actualRecipientId, // Using the verified ID
+                groupId = group.groupId.toString(),
+                groupName = group.groupName,
+                description = group.description
+            )
+        }
+    }
+    suspend fun getRecipientId(username: String): String? {
+        // Try local Room DB first (fastest)
+        val localId = repository.getRecipientIdFromRoom(username)
+        if (localId != null) return localId
+
+        //  If not local, search the Firebase Realtime Database
+        return repository.getRecipientIdFromFirebase(username)
     }
     fun onEvent(event: GroupEvent)
     {

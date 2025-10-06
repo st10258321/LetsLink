@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +19,7 @@ import com.example.letslink.R
 import com.example.letslink.SessionManager
 import com.example.letslink.activities.GroupChatActivity
 import com.example.letslink.activities.GroupDetailsF
+import com.example.letslink.activities.ReceivedLinks
 import com.example.letslink.adapter.GroupAdapter
 import com.example.letslink.local_database.GroupEvent
 import com.example.letslink.viewmodels.GroupViewModel
@@ -35,7 +35,9 @@ class GroupsFragment : Fragment() {
 
     private lateinit var floatingButton: FloatingActionButton
     private lateinit var inviteLinkEditText: EditText
+    private lateinit var userName: EditText
     private lateinit var joinGroupButton: Button
+    private lateinit var sendToUser: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,14 +50,15 @@ class GroupsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view)
-
+        inviteLinkEditText = view.findViewById(R.id.link)
+        userName = view.findViewById(R.id.username)
         groupsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val application = requireActivity().application
 
         appContainer = (application as MyApp).container
-        inviteLinkEditText = view.findViewById(R.id.inviteLinkEditText) // Use your actual ID
-        joinGroupButton = view.findViewById(R.id.joinGroupButton)      // Use your actual ID
+        joinGroupButton = view.findViewById(R.id.joinGroupButton)
+        sendToUser = view.findViewById(R.id.button)
         sessionManager = appContainer.sessionManager
 
         viewModel = ViewModelProvider(
@@ -68,6 +71,7 @@ class GroupsFragment : Fragment() {
         observeGroups()
         observeViewModelState()
     }
+
     private fun observeViewModelState() {
         lifecycleScope.launch {
             viewModel.noteState.collect { state ->
@@ -77,8 +81,12 @@ class GroupsFragment : Fragment() {
 
                 // Show success message
                 if (state.isSuccess) {
-                    Toast.makeText(requireContext(), "Group operation successful!", Toast.LENGTH_SHORT).show()
 
+                    Toast.makeText(
+                        requireContext(),
+                        "Group operation successful!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -92,18 +100,19 @@ class GroupsFragment : Fragment() {
             }
         }
     }
+
     private fun setupRecyclerView() {
         adapter = GroupAdapter(
             onGroupClick = { note ->
-                val fragment = GroupDetailsF().apply {
-                    arguments = Bundle().apply {
-                        putString("groupId", note.groupId.toString())
-                    }
+                val groupDetailsFragment = GroupDetailsF()
+                val bundle = Bundle().apply {
+                    putString("groupId", note.groupId.toString())
                 }
+                groupDetailsFragment.arguments = bundle
 
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment) // use your container id
-                    .addToBackStack(null) // so you can go back
+                    .replace(R.id.fragment_container, groupDetailsFragment)
+                    .addToBackStack(null)
                     .commit()
             },
             onGroupDelete = { note ->
@@ -116,42 +125,68 @@ class GroupsFragment : Fragment() {
             adapter = this@GroupsFragment.adapter
         }
     }
+
+
     private fun setupClickListeners() {
         val fab: FloatingActionButton = requireView().findViewById(R.id.floatingId)
+
+        // create group
         fab.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, CreateGroupFragment())
                 .addToBackStack("GroupsFragment")
                 .commit()
         }
+
         joinGroupButton.setOnClickListener {
-            val link = inviteLinkEditText.text.toString().trim()
-            if (link.isBlank()) {
-                Toast.makeText(requireContext(), "Please paste an invite link.", Toast.LENGTH_SHORT).show()
+            // goes ReceivedLinks page
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ReceivedLinks())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        // 3. send link
+        sendToUser.setOnClickListener {
+            val rawInviteLink = inviteLinkEditText.text.toString().trim()
+            val recipientUsername = userName.text.toString().trim()
+
+            if (recipientUsername.isBlank() || rawInviteLink.isBlank()) {
+                Toast.makeText(requireContext(), "User name or link is empty.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val groupId = extractGroupIdFromLink(link)
+            //  takes the actual uuid from the end of the url
+            val groupIdToSearch = try {
+                // Split the URL
+                rawInviteLink.substringAfterLast("/")
+            } catch (e: Exception) {
+                // Handle  url format is  wrong
+                Toast.makeText(requireContext(), "Invalid Group Link/ID format.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
-            if (groupId != null) {
-                viewModel.joinGroupFromInvite(groupId)
-                inviteLinkEditText.setText("")
-            } else {
-                Toast.makeText(requireContext(), "Invalid invite link format. Please check the URL.", Toast.LENGTH_LONG).show()
+            // Check if the extracted ID is valid
+            if (groupIdToSearch.length != 36) {
+                Toast.makeText(requireContext(), "Invalid Group Link/ID format (ID not found).", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            //Find the Group to Invite
+            val groupToInviteFrom = viewModel.groups.value.find {
+                // compares the ids
+                it.groupId.toString() == groupIdToSearch
+            }
+
+            if (groupToInviteFrom == null) {
+                Toast.makeText(requireContext(), "Group not found for this link/ID in your list.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            //Call ViewModel to find the user ID and send the invite
+            lifecycleScope.launch {
+                viewModel.sendPersonalizedInvite(recipientUsername, groupToInviteFrom)
+                Toast.makeText(requireContext(), "Processing invite to $recipientUsername...", Toast.LENGTH_SHORT).show()
             }
         }
     }
-    private fun extractGroupIdFromLink(link: String): String? {
-
-        val path = link.substringAfterLast("://").substringAfter('/')
-        val parts = path.split('/')
-
-        return if (parts.size >= 2 && parts[parts.size - 2] == "invite") {
-            parts.last()
-        } else {
-            null
-        }
-    }
-
-
 }

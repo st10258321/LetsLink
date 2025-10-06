@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/invite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/midnight"
@@ -50,22 +51,38 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/inviteLinkEditText"
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="enter user name"
+            android:inputType="text"
+            android:textColor="@color/gray"
+            android:textColorLink="@color/gray" />
+
+        <EditText
+            android:id="@+id/link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Paste invite link here (e.g., http://...)"
-            android:importantForAutofill="no"
-            android:inputType="textUri"
-            android:minHeight="48dp" />
+            android:ems="10"
+            android:inputType="text"
+            android:textColor="@color/gray" />
 
         <Button
-            android:id="@+id/joinGroupButton"
+            android:id="@+id/button"
             android:backgroundTint="@color/orange_primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="send invite" />
+
+        <Button
+            android:id="@+id/joinGroupButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Join Group" />
+            android:backgroundTint="@color/orange_primary"
+            android:hint="url"
+            android:text="View Inivites" />
 
     </LinearLayout>
 

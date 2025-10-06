@@ -1,14 +1,12 @@
 package com.example.letslink.API_related
 
-import com.example.letslink.API_related.RetrofitClient
 import com.example.letslink.SessionManager
 import kotlin.getValue
-import com.example.letslink.API_related.GroupRepo
-import com.example.letslink.API_related.LetsLinkAPI
 import android.content.Context
 import com.example.letslink.local_database.GroupDao
 import com.example.letslink.local_database.LetsLinkDB
-
+import com.example.letslink.local_database.UserDao
+import com.google.firebase.database.DatabaseReference
 
 /**
  * This class defines what is needed
@@ -31,17 +29,24 @@ class AppContainer(applicationContext: Context) {
     }
 
     // Network Dependencies (Retrofit Only)
-    // configuration that provides the API interface.
+    // that provides the API interface.
     private val groupApiService: LetsLinkAPI by lazy {
         RetrofitClient.letsLinkAPI
     }
+    private val userDao : UserDao by lazy{
+        database.userDao()
+    }
 
-    //3. Repo /The Bridge group repo acts as a bridge between the app and api
+    private val db : DatabaseReference = com.google.firebase.database.FirebaseDatabase.getInstance().reference
+
+    // group repo acts as a bridge between the app and api
     val groupRepository: GroupRepo by lazy {
         GroupRepo(
             groupDao = groupDao,
             groupApiService = groupApiService,
-            sessionManager = sessionManager
+            sessionManager = sessionManager,
+            db  = db,
+            userDao = userDao
         )
     }
 }

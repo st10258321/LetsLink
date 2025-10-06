@@ -8,20 +8,23 @@ import com.example.letslink.API_related.GroupRequest
 import com.example.letslink.API_related.JoinGroupRequest
 import com.example.letslink.model.Group
 import com.example.letslink.model.GroupResponse
+import com.example.letslink.model.InviteRequest
 
-// You'll need to define Group, GroupRequest, JoinGroupRequest, and GroupResponse
+
 
 /**
  * Interface for the LetsLink API
  */
 interface LetsLinkAPI {
 
-    @GET("groups")
-    suspend fun getGroups(): List<Group>
+    // @GET("groups")
+    //suspend fun getGroups(): List<Group>
 
     @POST("groups")
     suspend fun createGroup(@Body request: GroupRequest): GroupResponse
 
     @POST("api/group/join")
-   suspend fun joinGroup(@Body request: JoinGroupRequest): GroupResponse
+    suspend fun joinGroup(@Body request: JoinGroupRequest): GroupResponse
+    @POST("/invite/specificUser")
+    suspend fun assignInviteToUser(@Body request: InviteRequest): GroupResponse
 }
