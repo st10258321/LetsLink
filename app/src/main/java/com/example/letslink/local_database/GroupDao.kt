@@ -29,6 +29,9 @@ interface GroupDao {
     @Query("SELECT * FROM `Groups` WHERE groupId = :groupId")
     fun getNoteById(groupId: String): Flow<List<Group>>
 
+    @Query("SELECT * FROM `Groups` WHERE groupId = :groupId")
+    suspend fun getGroupById(groupId: String): Group?
+
     @Query("SELECT * FROM `Groups` WHERE userId = :userId ORDER BY groupId DESC")
     fun getNotesByUserIdDesc(userId: String): Flow<List<Group>>
 }

@@ -19,9 +19,15 @@ import com.example.letslink.fragments.CreateTaskFragment
 import com.example.letslink.model.Event
 import com.example.letslink.model.EventVoting_m
 import com.google.firebase.database.FirebaseDatabase
+import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import com.example.letslink.local_database.GroupDao
+import com.example.letslink.local_database.LetsLinkDB
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 
 class GroupDetailsF : Fragment() {
-
+    private lateinit var groupDao : GroupDao
 
     companion object{
         fun newInstance(): GroupDetailsF{
@@ -40,14 +46,26 @@ class GroupDetailsF : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val groupEventAdapter : GroupEventAdapter = GroupEventAdapter(requireContext(), listOf())
+
+        groupDao = LetsLinkDB.getDatabase(requireContext()).groupDao()
+        var groupEventAdapter : GroupEventAdapter = GroupEventAdapter(requireContext(), listOf())
         val votingButton: LinearLayout = view.findViewById(R.id.btn_vote_on_events)
         val startChatButton: LinearLayout = view.findViewById(R.id.btn_start_chat)
         val sharedPref = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val userId = sharedPref.getString(SessionManager.KEY_USER_ID, null)
         val groupId = arguments?.getString("groupId")
+        if(groupId != null){
+          lifecycleScope.launch{
+              val group = groupDao.getGroupById(groupId)
+              if(group != null){
+                  view.findViewById<TextView>(R.id.txt_group_name).text = group.groupName
+                  view.findViewById<TextView>(R.id.txt_group_description).text = group.description
+              }
 
-        Toast.makeText(requireContext(), "Group ID: $groupId", Toast.LENGTH_SHORT).show()
+          }
+
+        }
+
 
 
         votingButton.setOnClickListener {
@@ -77,26 +95,28 @@ class GroupDetailsF : Fragment() {
 
             }
         }
+
+        //most recent events for groups
         val groupEventsRV : RecyclerView = view.findViewById(R.id.groupEventsRV)
         groupEventsRV.layoutManager = LinearLayoutManager(requireContext())
         groupEventsRV.adapter = groupEventAdapter
 
         val evtRef = FirebaseDatabase.getInstance().getReference("events")
+        val groupEvents = mutableListOf<EventVoting_m>()
 
         evtRef.get().addOnSuccessListener {  snapshot ->
-            val events = snapshot.children.mapNotNull { snap ->
+            snapshot.children.forEach { snap ->
                 val event = snap.getValue(EventVoting_m::class.java)?.copy(eventId = snap.key!!)
-
                 if(event != null && event.groups.contains(groupId)){
-                    event
-                    groupEventsRV.adapter = GroupEventAdapter(requireContext(), listOf(event))
-                }else{
-                    null
+                    groupEvents.add(event)
                 }
             }
-            Log.d("--groupEvents--", "Event: ${events.size}")
+
+
             groupEventAdapter.notifyDataSetChanged()
         }
+        groupEventAdapter = GroupEventAdapter(requireContext(), groupEvents)
+        groupEventsRV.adapter = groupEventAdapter
 
 
 
