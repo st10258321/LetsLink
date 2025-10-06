@@ -2,6 +2,8 @@ package com.example.letslink.viewmodels
 
 import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -95,7 +97,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
                         }
 
                 } catch (e:Exception){
-                    _loginState.update { it.copy(isLoading = false, errorMessage = e.message) }
+                    _loginState.update { it.copy(isLoading = false, isSuccess = false, errorMessage = e.message) }
                 Log.d("LoginViewModel", "Google login failed with exception: ${e.message}")
                 }
 

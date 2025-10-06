@@ -21,8 +21,10 @@ import com.example.letslink.model.EventVoting_m
 import com.google.firebase.database.FirebaseDatabase
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import com.example.letslink.adapter.EventResultsAdapter
 import com.example.letslink.local_database.GroupDao
 import com.example.letslink.local_database.LetsLinkDB
+import com.example.letslink.model.EventVotingResults
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
@@ -48,7 +50,7 @@ class GroupDetailsF : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         groupDao = LetsLinkDB.getDatabase(requireContext()).groupDao()
-        var groupEventAdapter : GroupEventAdapter = GroupEventAdapter(requireContext(), listOf())
+
         val votingButton: LinearLayout = view.findViewById(R.id.btn_vote_on_events)
         val startChatButton: LinearLayout = view.findViewById(R.id.btn_start_chat)
         val sharedPref = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
@@ -96,25 +98,62 @@ class GroupDetailsF : Fragment() {
             }
         }
 
+        val groupEvents = mutableListOf<EventVoting_m>()
+        val votingResults = mutableListOf<EventVotingResults>()
+        //results for group voting
+        val groupVotingDb = FirebaseDatabase.getInstance().getReference("group_voting").child(groupId!!).child("events")
+        val groupResultsRV : RecyclerView = view.findViewById(R.id.groupResultsRV)
+        groupResultsRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        var groupEventAdapter = GroupEventAdapter(requireContext(), groupEvents)
+
+        var resultsAdapter = EventResultsAdapter(requireContext(), votingResults)
+        groupResultsRV.adapter = resultsAdapter
+
         //most recent events for groups
         val groupEventsRV : RecyclerView = view.findViewById(R.id.groupEventsRV)
         groupEventsRV.layoutManager = LinearLayoutManager(requireContext())
         groupEventsRV.adapter = groupEventAdapter
 
         val evtRef = FirebaseDatabase.getInstance().getReference("events")
-        val groupEvents = mutableListOf<EventVoting_m>()
 
-        evtRef.get().addOnSuccessListener {  snapshot ->
+
+        evtRef.get().addOnSuccessListener { snapshot ->
             snapshot.children.forEach { snap ->
-                val event = snap.getValue(EventVoting_m::class.java)?.copy(eventId = snap.key!!)
-                if(event != null && event.groups.contains(groupId)){
+                val dataMap = snap.value as? Map<String, Any> ?: return@forEach
+                val eventId = snap.key ?: return@forEach
+                val title = dataMap["title"] as? String ?: ""
+                val description = dataMap["description"] as? String ?: ""
+                val groups = dataMap["groups"] as? List<String> ?: emptyList()
+
+                val event = EventVoting_m(eventId, title, description, groups = groups)
+                if (event.groups.contains(groupId)) {
                     groupEvents.add(event)
+                    groupEventAdapter.notifyDataSetChanged()
+
+                    groupVotingDb.child(event.eventId).child("votes").get()
+                        .addOnSuccessListener { voteSnapshot ->
+                            val voteMap =
+                                voteSnapshot.value as? Map<String, String> ?: emptyMap()
+                            val yesCount = voteMap.count { it.value == "dislike" }
+                            val noCount = voteMap.count { it.value == "like" }
+
+                            val existingIndex = votingResults.indexOfFirst { it.eventId == event.eventId }
+                            if (existingIndex != -1) {
+                                votingResults[existingIndex] =
+                                    EventVotingResults(event.eventId, event.title, yesCount, noCount)
+                            } else {
+                                votingResults.add(
+                                    EventVotingResults(event.eventId, event.title, yesCount, noCount)
+                                )
+                            }
+
+                            resultsAdapter.notifyDataSetChanged()
+                        }
                 }
             }
+        resultsAdapter  = EventResultsAdapter(requireContext(), votingResults)
+        groupResultsRV.adapter = resultsAdapter
 
-
-            groupEventAdapter.notifyDataSetChanged()
-        }
         groupEventAdapter = GroupEventAdapter(requireContext(), groupEvents)
         groupEventsRV.adapter = groupEventAdapter
 
@@ -130,4 +169,5 @@ class GroupDetailsF : Fragment() {
 
     }
 
+}
 }

@@ -22,7 +22,12 @@ import com.example.letslink.online_database.fb_userRepo
 import com.example.letslink.viewmodels.UserViewModel
 import com.google.android.material.button.MaterialButton
 import com.example.letslink.viewmodels.ViewModelFactory
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 class RegisterPage : AppCompatActivity() {
     private lateinit var viewModel: UserViewModel
@@ -50,6 +55,29 @@ class RegisterPage : AppCompatActivity() {
             val intent = Intent(this, LoginPage::class.java)
             startActivity(intent)
         }
+
+        val txtDateOfBirth = findViewById<TextView>(R.id.txt_date_of_birth)
+        txtDateOfBirth.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date of birth")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+
+            datePicker.show(supportFragmentManager, "DATE_PICKER")
+
+
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                calendar.timeInMillis = selection
+                val formattedDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) .format(calendar.time)
+                txtDateOfBirth.text = formattedDate
+            }
+        }
+
+
+
+
+
 
         SignUpButton.setOnClickListener {
             val txtfullName : TextView = findViewById(R.id.txt_full_name)

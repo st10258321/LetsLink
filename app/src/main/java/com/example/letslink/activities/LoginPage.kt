@@ -52,6 +52,7 @@ class LoginPage : AppCompatActivity() {
         findViewById<SignInButton>(R.id.google_sign_in_btn).setOnClickListener {
             val siginInIntent = googleSignInClient.signInIntent
             startActivityForResult(siginInIntent, RC_SIGN_IN)
+
         }
 
         var dao : UserDao = LetsLinkDB.getDatabase(applicationContext).userDao()

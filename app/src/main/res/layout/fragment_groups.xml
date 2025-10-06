@@ -12,10 +12,12 @@
         android:id="@+id/floatingId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginEnd="33dp"
         android:layout_marginRight="34dp"
-        android:layout_marginBottom="73dp"
+        android:layout_marginBottom="93dp"
         android:backgroundTint="@color/orange_primary"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
@@ -72,12 +74,14 @@
             android:id="@+id/button"
             android:backgroundTint="@color/orange_primary"
             android:layout_width="match_parent"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:text="send invite" />
 
         <Button
             android:id="@+id/joinGroupButton"
             android:layout_width="match_parent"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/orange_primary"

@@ -243,133 +243,17 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Group Activities"/>
+                android:text="Voting Results"/>
 
-            <LinearLayout
-                android:id="@+id/layout_activities_row"
+            <androidx.recyclerview.widget.RecyclerView
+                android:padding="0dp"
+                android:id="@+id/groupResultsRV"
                 android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:scrollbars="none"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:layout_marginHorizontal="8dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/card_messages"
-                    android:layout_width="101dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/rec_outline_empty"
-                    android:orientation="vertical"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="36dp">
-
-                    <TextView
-                        android:id="@+id/txt_messages_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginBottom="4dp"
-                        android:textStyle="bold"
-                        android:text="Messages"
-                        android:textColor="#F44A22"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/txt_messages_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="120"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/card_events"
-                    android:layout_width="123dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/rec_outline_empty"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:orientation="vertical"
-                    android:paddingVertical="12dp">
-
-                    <TextView
-                        android:id="@+id/txt_events_label"
-                        android:layout_width="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginBottom="4dp"
-                        android:text="Events Created"
-                        android:textColor="#F44A22"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/txt_events_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginBottom="4dp"
-                        android:text="5"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txt_events_plus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="+1"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/card_tasks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rec_outline_empty"
-                    android:paddingVertical="12dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_tasks_label"
-                        android:textColor="#F44A22"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="Tasks Completed" />
-
-                    <TextView
-                        android:id="@+id/txt_tasks_count"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="22" />
-
-                    <TextView
-                        android:id="@+id/txt_tasks_minus"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="-3" />
-                </LinearLayout>
-            </LinearLayout>
+                tools:listitem="@layout/item_voting_result" />
 
             <LinearLayout
                 android:id="@+id/layout_buttons"

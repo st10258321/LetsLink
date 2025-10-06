@@ -35,8 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EventVotingScreen(events:List<EventVoting_m>, groupId: String, userId: String) {
         val context = LocalContext.current
-    Toast.makeText(context, "Group ID: $groupId", Toast.LENGTH_SHORT).show()
-    Toast.makeText(context, "User ID: $userId", Toast.LENGTH_SHORT).show()
+
     Log.d("EventVotingScreen", "Events: $events")
     EventSwipeDeck(
         events = events,

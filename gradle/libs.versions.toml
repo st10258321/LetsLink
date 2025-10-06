@@ -43,6 +43,7 @@ firebase-auth = "23.2.1"
 google-signin = "20.7.0"
 firebase-messaging = "24.1.2"
 material3Version = "1.4.0"
+uiText = "1.9.2"
 
 
 
@@ -99,6 +100,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", ver
 google-signin = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "google-signin" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebase-messaging" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
+androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
