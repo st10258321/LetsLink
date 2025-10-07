@@ -31,8 +31,8 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class EventDetails : Fragment() {
-    companion object{
-        private const val  ARG_EVENT_ID = "eventId"
+    companion object {
+        private const val ARG_EVENT_ID = "eventId"
         private const val ARG_TITLE = "title"
         private const val ARG_DESCRIPTION = "description"
         private const val ARG_LOCATION = "location"
@@ -40,7 +40,7 @@ class EventDetails : Fragment() {
         private const val ARG_END_TIME = "endTime"
         private const val ARG_DATE = "date"
 
-        fun newInstace(event: Event) : EventDetails{
+        fun newInstace(event: Event): EventDetails {
             val fragment = EventDetails()
             val bundke = Bundle().apply {
                 putString(ARG_EVENT_ID, event.eventId)
@@ -53,14 +53,16 @@ class EventDetails : Fragment() {
             }
             fragment.arguments = bundke
             return fragment
-            }
+        }
     }
+
     private val selectedGroupIds = mutableListOf<String>()
     private val groupList = mutableListOf<Group>()
+
     //private val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var auth : FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     private lateinit var groupDao: GroupDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,8 +100,8 @@ class EventDetails : Fragment() {
             showGroupSelectionDialog()
         }
         //getting group names and id's from database
-        lifecycleScope.launch{
-            groupDao.getNotesByUserId(userId!!).collect{ groups ->
+        lifecycleScope.launch {
+            groupDao.getNotesByUserId(userId!!).collect { groups ->
                 groupList.clear()
                 groupList.addAll(groups)
                 Log.d("GroupList", groupList.count().toString())
@@ -109,12 +111,16 @@ class EventDetails : Fragment() {
         val btnAddToGroups: Button = view.findViewById(R.id.btnAddToGroups)
         btnAddToGroups.setOnClickListener {
             val dbRef = FirebaseDatabase.getInstance().getReference("events")
-                dbRef.child(eventId!!).child("groups").setValue(selectedGroupIds).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Event added to groups", Toast.LENGTH_SHORT).show()
-                    tvSelectedGroups.setText("Select Groups")
-                }.addOnFailureListener {
-                    Toast.makeText(requireContext(), "Failed to add event to groups", Toast.LENGTH_SHORT).show()
-                }
+            dbRef.child(eventId!!).child("groups").setValue(selectedGroupIds).addOnSuccessListener {
+                Toast.makeText(requireContext(), "Event added to groups", Toast.LENGTH_SHORT).show()
+                tvSelectedGroups.setText("Select Groups")
+            }.addOnFailureListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to add event to groups",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         val addTaskButton: LinearLayout = view.findViewById(R.id.btn_add_task)
@@ -124,7 +130,10 @@ class EventDetails : Fragment() {
         todoButton.setOnClickListener {
             val toDoFragment = ToDoFragment.newInstance(eventId!!)
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, toDoFragment) // make sure this matches your container id
+                .replace(
+                    R.id.fragment_container,
+                    toDoFragment
+                ) // make sure this matches your container id
                 .addToBackStack(null) // so user can go back
                 .commit()
 
@@ -160,6 +169,7 @@ class EventDetails : Fragment() {
         eventTitle.text = title
         eventHost.text = name
     }
+
     private fun showGroupSelectionDialog() {
         val groupName = groupList.map { it.groupName }.toTypedArray()
         val checkedItems = BooleanArray(groupList.size) { i ->
@@ -193,3 +203,4 @@ class EventDetails : Fragment() {
         builder.setNegativeButton("Cancel", null)
         builder.show()
     }
+}
