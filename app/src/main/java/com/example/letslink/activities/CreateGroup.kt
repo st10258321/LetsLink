@@ -103,8 +103,7 @@ class CreateGroupFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteState.collect { state ->
                     if (state.isSuccess) {
-                        Toast.makeText(context, "Group created successfully!", Toast.LENGTH_LONG)
-                            .show()
+                        Toast.makeText(context, "Group created successfully!", Toast.LENGTH_LONG).show()
                         parentFragmentManager.popBackStack()
                     }  else if(state.errorMessage != null){
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_LONG).show()
