@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.letslink.local_database.GroupEvent
 
 
@@ -93,11 +95,25 @@ class CreateGroupFragment : Fragment() {
             Toast.makeText(context, "Title or description must not be empty", Toast.LENGTH_LONG).show()
             return
         }
-
         viewModel.onEvent(GroupEvent.setTitle(title))
         viewModel.onEvent(GroupEvent.setDecription(description))
         //event to create group
         viewModel.onEvent(GroupEvent.createNote)
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.noteState.collect { state ->
+                    if (state.isSuccess) {
+                        Toast.makeText(context, "Group created successfully!", Toast.LENGTH_LONG)
+                            .show()
+                        parentFragmentManager.popBackStack()
+                    }  else if(state.errorMessage != null){
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_LONG).show()
+
+                    }
+                }
+            }
+        }
+
     }
     private fun showInviteLinkDialog(link: String,inviteLinkDialog : Dialog,context: Context) {
         // Prevent showing the dialog multiple times

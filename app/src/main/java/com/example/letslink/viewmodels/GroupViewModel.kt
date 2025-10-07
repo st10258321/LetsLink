@@ -1,8 +1,10 @@
 package com.example.letslink.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+
 import com.example.api_test.GroupState
 import com.example.letslink.API_related.GroupRepo
 import com.example.letslink.SessionManager
@@ -202,7 +204,7 @@ class GroupViewModel (
                         _noteState.update { it.copy(isLoading = true, errorMessage = null) }
 
                         val apiResponse = repository.createAndSyncGroup(newGroup)
-
+                        Log.d("GroupViewModel", "API Response: $apiResponse")
                         if (apiResponse != null) {
                             _noteState.update { it.copy(
                                 userId = "",

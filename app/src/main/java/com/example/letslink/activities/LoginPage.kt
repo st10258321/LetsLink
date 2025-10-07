@@ -83,6 +83,7 @@ class LoginPage : AppCompatActivity() {
                     val user = userViewModel.getUserByEmail(state.email)
                     if(user != null){
                         sessionManager.saveUserSession(user.userId, user.email, user.firstName)
+                        Toast.makeText(this@LoginPage, "Login successful", Toast.LENGTH_SHORT).show()
                         Log.d("LoginPage", "User session saved: ${user.userId}, ${user.email}, ${user.firstName}")
                         val intent = Intent(this@LoginPage, HorizontalCoordinator::class.java)
                         startActivity(intent)

@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.material3)
     implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.media3.common.ktx)
 
 
     // Testing
