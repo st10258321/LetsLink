@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="80dp"> <!-- Padding so navbar doesnt cover anything -->
+        android:paddingBottom="110dp"> <!-- Padding so navbar doesnt cover anything -->
 
 
         <!-- Top Bar -->
