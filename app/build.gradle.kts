@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+    implementation("com.google.android.material:material:1.13.0")
 
 
     // Hashing
@@ -115,6 +116,7 @@ dependencies {
     implementation("org.kotlincrypto.hash:sha2")
     implementation("org.kotlincrypto.hash:sha3")
     implementation("org.kotlincrypto.hash:blake2")
+    implementation("com.google.android.material:material:1.12.0")
 
     // Retrofit
     implementation(libs.retrofit)

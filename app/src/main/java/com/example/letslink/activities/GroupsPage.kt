@@ -126,17 +126,7 @@ class GroupsFragment : Fragment() {
         }
     }
 
-
     private fun setupClickListeners() {
-        val fab: FloatingActionButton = requireView().findViewById(R.id.floatingId)
-
-        // create group
-        fab.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, CreateGroupFragment())
-                .addToBackStack("GroupsFragment")
-                .commit()
-        }
 
         joinGroupButton.setOnClickListener {
             // goes ReceivedLinks page

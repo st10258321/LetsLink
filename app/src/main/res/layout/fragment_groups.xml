@@ -8,23 +8,7 @@
     android:background="@color/midnight"
     tools:context=".fragments.GroupsFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="33dp"
-        android:layout_marginRight="34dp"
-        android:layout_marginBottom="93dp"
-        android:backgroundTint="@color/orange_primary"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:src="@drawable/baseline_add_24"
-        app:tint="@color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
-
+    <!-- Header section -->
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
@@ -54,52 +38,68 @@
 
         <EditText
             android:id="@+id/username"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="enter user name"
+            android:hint="Enter user name"
             android:inputType="text"
-            android:textColor="@color/gray"
-            android:textColorLink="@color/gray" />
+            android:textColor="@color/gray" />
 
         <EditText
             android:id="@+id/link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:hint="Enter link"
             android:inputType="text"
             android:textColor="@color/gray" />
 
         <Button
             android:id="@+id/button"
-            android:backgroundTint="@color/orange_primary"
             android:layout_width="match_parent"
-            android:textColor="@color/white"
             android:layout_height="wrap_content"
-            android:text="send invite" />
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/orange_primary"
+            android:text="Send Invite"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/joinGroupButton"
             android:layout_width="match_parent"
-            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/orange_primary"
-            android:hint="url"
-            android:text="View Inivites" />
+            android:text="View Invites"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/groups_recycler_view"
+    <!-- RecyclerView + fade overlay -->
+    <FrameLayout
+        android:id="@+id/groups_container"
         android:layout_width="match_parent"
-        android:layout_height="432dp"
-
-        android:layout_above="@id/floatingId"
-
+        android:layout_height="match_parent"
         android:layout_below="@id/header_layout"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="84dp" />
+        android:layout_marginBottom="84dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groups_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Top fade -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="top"
+            android:background="@drawable/fade_top" />
+
+        <!-- Bottom fade -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/fade_bottom" />
+
+    </FrameLayout>
 
 </RelativeLayout>
