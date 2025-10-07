@@ -29,7 +29,7 @@ class CreateTaskFragment : Fragment() {
             return fragment
         }
     }
-    // 1. Inflate the layout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,7 +38,7 @@ class CreateTaskFragment : Fragment() {
         return inflater.inflate(R.layout.activity_create_task_page, container, false)
     }
 
-    // 2. Set up back navigation logic
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val eventId = arguments?.getString(ARG_EVENT_ID)
@@ -80,7 +80,6 @@ class CreateTaskFragment : Fragment() {
         }
 
 
-        // Note: Additional view initialization (like EditTexts or other buttons)
-        // would go here.
+
     }
 }

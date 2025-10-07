@@ -35,7 +35,7 @@ class SettingsFragment : Fragment(),android.location.LocationListener {
             val prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
             prefs.edit().putBoolean("notifications_enabled", isGranted).apply()
         }
-    //location switch
+
     private lateinit var locationSwitch: SwitchCompat
     private lateinit var database : DatabaseReference
     private val auth = FirebaseAuth.getInstance()
