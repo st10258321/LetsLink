@@ -45,7 +45,10 @@ firebase-messaging = "24.1.2"
 material3Version = "1.4.0"
 uiText = "1.9.2"
 media3CommonKtx = "1.8.0"
-
+kotlinxIo = "0.5.4"
+mockk = "1.13.12"
+coreTesting = "2.2.0"
+coroutinesTest = "1.8.1"
 
 
 [libraries]
@@ -103,6 +106,11 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
+kotlinx-io-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-io-core", version.ref = "kotlinxIo" }
+kotlinx-io-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-io-jvm", version.ref = "kotlinxIo" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

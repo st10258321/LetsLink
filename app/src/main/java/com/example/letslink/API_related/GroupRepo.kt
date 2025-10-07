@@ -23,6 +23,8 @@ import java.util.UUID
  *
  * This class hanndels coordination between the local Room database via GroupDao and the
  * LetsLinkAPI.
+ * //(Philipp Lackner ,2021)
+ *
  *
  */
 class GroupRepo(
@@ -192,3 +194,4 @@ class GroupRepo(
         }
     }
 }
+

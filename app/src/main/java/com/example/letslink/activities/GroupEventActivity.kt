@@ -29,7 +29,7 @@ class GroupEventActivity : AppCompatActivity() {
 
 
         val eventId = intent.getStringExtra("event_data")
-        Toast.makeText(this, "Event ID: $eventId", Toast.LENGTH_SHORT).show()
+
         fbEventsrepo = fb_EventsRepo(this)
         taskRepo = fb_TaskRepo(this)
 

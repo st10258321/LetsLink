@@ -140,7 +140,7 @@ class GroupsFragment : Fragment() {
         sendToUser.setOnClickListener {
             val rawInviteLink = inviteLinkEditText.text.toString().trim()
             val recipientUsername = userName.text.toString().trim()
-
+//require context is needed to view toast for fragmenets (Ariel ,202
             if (recipientUsername.isBlank() || rawInviteLink.isBlank()) {
                 Toast.makeText(requireContext(), "User name or link is empty.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -151,13 +151,14 @@ class GroupsFragment : Fragment() {
                 // Split the URL
                 rawInviteLink.substringAfterLast("/")
             } catch (e: Exception) {
-                // Handle  url format is  wrong
+                //require context is needed to view toast for fragmenets (Ariel ,202
                 Toast.makeText(requireContext(), "Invalid Group Link/ID format.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
             // Check if the extracted ID is valid
             if (groupIdToSearch.length != 36) {
+                //require context is needed to view toast for fragmenets (Ariel ,202
                 Toast.makeText(requireContext(), "Invalid Group Link/ID format (ID not found).", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -175,6 +176,7 @@ class GroupsFragment : Fragment() {
             //Call ViewModel to find the user ID and send the invite
             lifecycleScope.launch {
                 viewModel.sendPersonalizedInvite(recipientUsername, groupToInviteFrom)
+                //require context is needed to view toast for fragmenets (Ariel ,202
                 Toast.makeText(requireContext(), "Processing invite to $recipientUsername...", Toast.LENGTH_SHORT).show()
             }
         }

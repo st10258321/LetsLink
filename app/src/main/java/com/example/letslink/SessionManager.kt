@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import java.util.UUID
 import androidx.core.content.edit
-
+//this class handles tracking users locally so that their id can be tracked  ( Ketul Patel ,2015.)
 open class SessionManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
     companion object {

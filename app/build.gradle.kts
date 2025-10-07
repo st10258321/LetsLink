@@ -7,6 +7,14 @@ plugins {
     id("kotlin-parcelize")
 }
 
+
+//configurations.all {
+//    resolutionStrategy {
+//        force("org.jetbrains.kotlinx:kotlinx-io-jvm:0.3.1")
+//        force("org.jetbrains.kotlinx:kotlinx-io-core:0.3.1")
+//    }
+//}
+
 android {
     namespace = "com.example.letslink"
     compileSdk = 36
@@ -49,7 +57,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)  // modern Material (com.google.android.material:material)
+    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -73,7 +81,6 @@ dependencies {
     implementation(libs.androidx.viewpager)
     implementation(libs.material)
 
-
     // Google Play services
     implementation(libs.play.services.maps)
 
@@ -84,7 +91,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.media3.common.ktx)
 
-
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -94,10 +100,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //pfff
+    // Other UI
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
-
 
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -107,7 +112,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation("com.google.android.material:material:1.13.0")
-
 
     // Hashing
     implementation(platform("org.kotlincrypto.hash:bom:0.8.0"))
@@ -126,10 +130,10 @@ dependencies {
     // Gson library
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // for reading 2.2.0 metadata
+    // KotlinX Metadata
     implementation(libs.kotlinx.metadata.jvm)
 
-    //for firebase
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.firebase.auth)
@@ -137,4 +141,13 @@ dependencies {
     implementation(libs.google.signin)
     implementation(libs.firebase.messaging)
 
+//    // KotlinX IO (force-stable version)
+//    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.5")
+//    implementation("org.jetbrains.kotlinx:kotlinx-io-jvm:0.5.5")
+
+    // Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.core.testing)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

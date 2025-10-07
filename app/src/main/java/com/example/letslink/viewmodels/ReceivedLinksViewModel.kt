@@ -10,7 +10,7 @@ import com.example.letslink.SessionManager
 import com.example.letslink.model.Invites
 import kotlinx.coroutines.launch
 import java.util.UUID
-
+//Acts as a bridge to allow whatever is inputted in the ui to be written to room (Lackner, 2025b)
 class ReceivedLinksViewModel(
     private val groupRepo: GroupRepo,
     private val sessionManager: SessionManager // To get the current user ID

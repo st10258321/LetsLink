@@ -61,6 +61,7 @@ class ReceivedLinks : Fragment() {
 
     /**
      *  Observes receivedInvites  from the ViewModel
+     *(Lackner, 2025b)
      *
      */
     private fun observeInvites() {
@@ -87,6 +88,7 @@ class ReceivedLinks : Fragment() {
 
     /**
      * handles Invites
+    (Lackner, 2025b)
      */
     private fun setupRecyclerView() {
         adapter = JoinAdapter(

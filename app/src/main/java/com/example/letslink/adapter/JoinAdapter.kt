@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.letslink.R
 import com.example.letslink.model.Invites
-
+//handles the ui where the group invites will be displayed
+//(Lackner, 2025a)
 class JoinViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val titleTextView: TextView = itemView.findViewById(R.id.group_name_text)
     private val descriptionTextView: TextView = itemView.findViewById(R.id.noteDescriptionTextView)
@@ -53,7 +54,7 @@ class JoinAdapter(
 
 class JoinDiffCallback : DiffUtil.ItemCallback<Invites>() {
     override fun areItemsTheSame(oldItem: Invites, newItem: Invites): Boolean {
-        // Items are the same if the groupId (is the same
+        // Items are the same if the groupId
         return oldItem.groupId == newItem.groupId
     }
 

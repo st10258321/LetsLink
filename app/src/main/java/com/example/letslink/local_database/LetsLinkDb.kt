@@ -11,6 +11,7 @@ import kotlin.jvm.java
 import com.example.letslink.model.User
 import com.example.letslink.model.Group
 import com.example.letslink.API_related.UUIDConverter
+//set up db and the dao will be have methods to write to room  (Lackner, 2025b)
 @Database(entities = [User::class,Group::class], version = 8, exportSchema = false)
 @TypeConverters(UUIDConverter::class)
 abstract class LetsLinkDB : RoomDatabase() {

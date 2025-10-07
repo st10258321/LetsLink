@@ -18,11 +18,12 @@ import com.example.letslink.model.UserEvent
 import org.kotlincrypto.hash.sha3.SHA3_512
 import java.security.MessageDigest
 
-
+//Acts as a bridge to allow whatever is inputted in the ui to be written to room (Lackner, 2025b)
 class UserViewModel(private val dao: UserDao) : ViewModel() {
     private val _userState = MutableStateFlow(UserState())
     private lateinit var sessionManager : SessionManager
     val userState = _userState.asStateFlow()
+//hash passowrds (SSOJet ,2022)
 
     fun hasPass(hashPassword : String): String
     {
@@ -67,7 +68,7 @@ class UserViewModel(private val dao: UserDao) : ViewModel() {
                     email = email,
                     password = hashedPassword,
                     dateOfBirth = dateOfBirth,
-                    )
+                )
 
                 viewModelScope.launch {
                     try {

@@ -11,10 +11,10 @@ import com.example.letslink.model.GroupResponse
 import com.example.letslink.model.InviteRequest
 
 
-
 /**
  * Interface for the LetsLink API
  */
+//(Philipp Lackner, 2021)
 interface LetsLinkAPI {
 
     // @GET("groups")

@@ -6,7 +6,7 @@ import com.example.letslink.API_related.AppContainer
 
 /**
  *  class to hold the global AppContainer instance.
- */
+ *///(Philipp Lackner ,2021)
 class MyApp : Application() {
 
     lateinit var container: AppContainer

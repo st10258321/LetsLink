@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference
 
 /**
  * This class defines what is needed
+ * (Android Developers ,(n.d.).)
  */
 class AppContainer(applicationContext: Context) {
 
@@ -30,6 +31,7 @@ class AppContainer(applicationContext: Context) {
 
     // Network Dependencies (Retrofit Only)
     // that provides the API interface.
+    //(Philipp Lackner ,2021)
     private val groupApiService: LetsLinkAPI by lazy {
         RetrofitClient.letsLinkAPI
     }

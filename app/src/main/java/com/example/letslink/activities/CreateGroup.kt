@@ -61,8 +61,9 @@ class CreateGroupFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
+        //require context is needed to view toast for fragmenets (Ariel ,202
         context = requireContext()
-        // 2. Setup the Create Group Button Logic (Example)
+        //  Setup the Create Group Button Logic
 
         addButton = view.findViewById(R.id.btnCreateGroup)
         etGroupName = view.findViewById(R.id.etGroupName)
@@ -114,25 +115,32 @@ class CreateGroupFragment : Fragment() {
         }
 
     }
-    private fun showInviteLinkDialog(link: String,inviteLinkDialog : Dialog,context: Context) {
+    /**
+     * Displays a dialog with the invitation link and a copy button.
+     */
+    private fun showInviteLinkDialog(link: String) {
         // Prevent showing the dialog multiple times
         if (inviteLinkDialog != null && inviteLinkDialog!!.isShowing) {
             return
         }
 
-        val builder = AlertDialog.Builder(context)
+//dialog
+
+        //require context is needed to view toast for fragmenets (Ariel ,2020)
+        //(Lindevs, 2020)
+        val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Group Created!")
         builder.setMessage("Share this unique invite link:\n\n$link")
             .setPositiveButton("Copy Link") { dialog, _ ->
                 copyToClipboard(link)
-                Toast.makeText(context, "Invite link copied to clipboard.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Invite link copied to clipboard.", Toast.LENGTH_LONG).show()
                 dialog.dismiss()
-
             }
             .setNegativeButton("Done") { dialog, _ ->
                 dialog.dismiss()
-
             }
+
+        inviteLinkDialog = builder.create()
         inviteLinkDialog!!.show()
     }
 

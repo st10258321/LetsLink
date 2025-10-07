@@ -6,6 +6,8 @@ import com.example.letslink.API_related.LetsLinkAPI
 
 /**
  * object to configure and provide the Retrofit client and API services.
+ * //(Philipp Lackner ,2021)
+ *
  */
 object RetrofitClient {
 

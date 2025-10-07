@@ -14,3 +14,9 @@ class UUIDConverter {
         return uuidString?.let { UUID.fromString(it) }
     }
 }
+/*
+* Ref list
+* A.Butakidis (2018). Room TypeConverter.
+* [online] Stack Overflow. Available at: https://stackoverflow.com/questions/53085704/room-typeconverter.
+* [Accessed 7 October 2025]
+* */

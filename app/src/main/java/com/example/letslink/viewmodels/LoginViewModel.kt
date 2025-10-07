@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
-
+//Acts as a bridge to allow whatever is inputted in the ui to be written to room (Lackner, 2025b)
 class LoginViewModel(private val dao: UserDao) : ViewModel() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private lateinit var uuidConverter : UUIDConverter
@@ -28,7 +28,7 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
     val loginState = _loginState.asStateFlow()
     var _loggedInUser: User? = null
 
-
+    ////hash passwords (SSOJet ,2022)
     fun hasPass(hashPassword : String): String
     {
         val bytes = hashPassword.toByteArray(Charsets.UTF_8)

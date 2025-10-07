@@ -11,6 +11,7 @@ import com.example.letslink.R
 import com.example.letslink.model.Group
 
 //handles the ui where the group info will be displayed
+//(Lackner, 2025a)
 class GroupViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val titleTextView: TextView = itemView.findViewById(R.id.group_name_text)
     private val descriptionTextView: TextView = itemView.findViewById(R.id.noteDescriptionTextView)
