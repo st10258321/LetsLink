@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
  * creates group and returns group data structures of group
  */
 function createGroupResponse(groupId, groupData) {
-    const userId = groupData?.userId || 'server-owner-id';
+    const userId = groupData?.userId || null;
     const groupName = groupData?.groupName || 'Default Group Name';
     const description = groupData?.description || 'A new collaborative group.';
     const members = groupData?.members || [userId];
