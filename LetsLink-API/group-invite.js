@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
  * creates group and returns group data structures of group
  */
 function createGroupResponse(groupId, groupData) {
-    const userId = groupData?.userId || null;
+    const userId = groupData?.userId || uuidv4();
     const groupName = groupData?.groupName || 'Default Group Name';
     const description = groupData?.description || 'A new collaborative group.';
     const members = groupData?.members || [userId];
@@ -85,41 +85,34 @@ function createGroupResponse(groupId, groupData) {
  */
 app.post('/groups', async (req, res) => { 
     const groupId = req.body.groupId;
-    const userId = req.body.userId || uuidv4(); // Generate user ID if not provided
-
-    // Validate required groupId parameter
+    const userId = req.body.userId;    
     if (!groupId) {
         console.error('Group creation failed: Missing groupId in request body.');
         return res.status(400).json({ error: 'The request body must contain a "groupId" field.' });
     }
 
-    // Check if group already exists in Firebase (Digital Fluency, 2020)
     const groupRef = db.ref('groups/' + groupId);
     const snapshot = await groupRef.once('value'); 
 
-    // If group exists, return existing data
     if (snapshot.exists()) {
         console.log(`Group already exists in Firebase: ${groupId}`);
         const data = snapshot.val(); 
         return res.status(200).json(createGroupResponse(groupId, data)); 
     }
 
-    // Create new group data structure (Alex Rusin, 2025)
-    const newGroupData = {
-        userId: userId, // Group creator
-        groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`, // Default name
-        description: req.body.description || `Joined group : ${userId}.`, // Default description
-        members: [userId] // Initialize members array with creator
+  \  const newGroupData = {
+        userId: req.body.userId || uuidv4(), // Use provided userId or generate one
+        groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
+        description: req.body.description || `Joined group : ${req.body.userId || 'new user'}.`,
+        members: [req.body.userId || uuidv4()] // Use actual userId
     };
 
-    // Write new group to Firebase database (Digital Fluency, 2020)
     await groupRef.set(newGroupData);
-    console.log(`New group created: ${groupId} by user: ${userId}`);
+    console.log(`New group created: ${groupId} by user: ${newGroupData.userId}`);
 
-    // Return success response with group data (Alex Rusin, 2025)
+    // Return success response with group data
     return res.status(201).json(createGroupResponse(groupId, newGroupData)); 
-});
-
+})
 /**
  * Endpoint for users to join existing groups
  * Uses groupId from invite link and userId to add user to group members
