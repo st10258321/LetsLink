@@ -67,13 +67,14 @@ function createGroupResponse(groupId, groupData) {
     const groupName = groupData?.groupName || 'Default Group Name';
     const description = groupData?.description || 'A new collaborative group.';
     const members = groupData?.members || [userId];
+    const inviteLink = groupData?.inviteLink || `https://${host}/invite/${groupId}`;
 
     return {
         groupId: groupId,
         userId: userId,
         groupName: groupName,
         description: description,
-        inviteLink: `https://${host}/invite/${groupId}`, // Full invite URL
+        inviteLink: inviteLink, // Full invite URL
         members: members // Array of member user IDs
     };
 }
@@ -100,11 +101,14 @@ app.post('/groups', async (req, res) => {
         return res.status(200).json(createGroupResponse(groupId, data)); 
     }
 
+    const inviteLink = `https://${host}/invite/${groupId}`;
+
      const newGroupData = {
         userId: req.body.userId || uuidv4(), // Use provided userId or generate one
         groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
         description: req.body.description || `Joined group : ${req.body.userId || 'new user'}.`,
-        members: [req.body.userId || uuidv4()] 
+        members: [req.body.userId || uuidv4()],
+        inviteLink: inviteLink // Store invite link in Firebase
     };
 
     await groupRef.set(newGroupData);
@@ -203,14 +207,14 @@ app.post('/invite/specificUser', async (req, res) => {
         return res.status(404).json({ error: `Group ID ${groupId} not found.` });
     }
     
-    // Use groupId as the invite token/link identifier
-    const inviteLink = groupId; 
+    const groupData = groupSnapshot.val();
+    const inviteLink = groupData.inviteLink || `https://${host}/invite/${groupId}`;
 
     //  invite data is stored in user's profile (Alex Rusin, 2025)
     const inviteData = {
         groupId: groupId,
-        groupName: groupName, 
-        description: description, 
+        groupName: groupName || groupData.groupName, 
+        description: description || groupData.description, 
         inviteLink: inviteLink 
     };
 
