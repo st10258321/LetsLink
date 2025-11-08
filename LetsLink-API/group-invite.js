@@ -100,11 +100,11 @@ app.post('/groups', async (req, res) => {
         return res.status(200).json(createGroupResponse(groupId, data)); 
     }
 
-  \  const newGroupData = {
+     const newGroupData = {
         userId: req.body.userId || uuidv4(), // Use provided userId or generate one
         groupName: req.body.groupName || `Group ${groupId.substring(0, 4)}`,
         description: req.body.description || `Joined group : ${req.body.userId || 'new user'}.`,
-        members: [req.body.userId || uuidv4()] // Use actual userId
+        members: [req.body.userId || uuidv4()] 
     };
 
     await groupRef.set(newGroupData);
@@ -112,7 +112,7 @@ app.post('/groups', async (req, res) => {
 
     // Return success response with group data
     return res.status(201).json(createGroupResponse(groupId, newGroupData)); 
-})
+});
 /**
  * Endpoint for users to join existing groups
  * Uses groupId from invite link and userId to add user to group members
