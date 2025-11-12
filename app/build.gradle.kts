@@ -2,18 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
 }
-
-
-//configurations.all {
-//    resolutionStrategy {
-//        force("org.jetbrains.kotlinx:kotlinx-io-jvm:0.3.1")
-//        force("org.jetbrains.kotlinx:kotlinx-io-core:0.3.1")
-//    }
-//}
 
 android {
     namespace = "com.example.letslink"
@@ -44,8 +36,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        jvmToolchain(11)
     }
 
     buildFeatures {
@@ -55,6 +47,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -81,8 +74,9 @@ dependencies {
     implementation(libs.androidx.viewpager)
     implementation(libs.material)
 
-    // Google Play services
+    // Google Play services - LOCATION & MAPS
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     // Extras
     implementation(libs.glide)
@@ -120,7 +114,6 @@ dependencies {
     implementation("org.kotlincrypto.hash:sha2")
     implementation("org.kotlincrypto.hash:sha3")
     implementation("org.kotlincrypto.hash:blake2")
-    implementation("com.google.android.material:material:1.12.0")
 
     // Retrofit
     implementation(libs.retrofit)
@@ -133,21 +126,22 @@ dependencies {
     // KotlinX Metadata
     implementation(libs.kotlinx.metadata.jvm)
 
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    // Firebase - UPDATED SECTION
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.google.signin)
     implementation(libs.firebase.messaging)
-
-//    // KotlinX IO (force-stable version)
-//    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.5")
-//    implementation("org.jetbrains.kotlinx:kotlinx-io-jvm:0.5.5")
+    implementation("com.google.firebase:firebase-firestore") // Add this line
 
     // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.core.testing)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Coroutines for location service
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 }

@@ -1,5 +1,6 @@
 package com.example.letslink.fragments
 
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.RenderEffect
@@ -10,27 +11,34 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Button
-import androidx.fragment.app.Fragment
+import android.widget.ImageButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.letslink.activities.Compass
+import androidx.fragment.app.Fragment
 import com.example.letslink.R
+import com.example.letslink.activities.Compass
 import com.example.letslink.nav.HorizontalCoordinator
+import com.example.letslink.utils.LocationPermissionHelper
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.card.MaterialCardView
-import kotlin.random.Random
-import android.content.Intent
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.DocumentChange
 
 class FriendMapFragment : Fragment(), OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     private lateinit var friendCard: MaterialCardView
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private var locationListener: ListenerRegistration? = null
+    private var userMarkers = mutableMapOf<String, Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,46 +47,31 @@ class FriendMapFragment : Fragment(), OnMapReadyCallback {
     ): View {
         val view = inflater.inflate(R.layout.fragment_friend_map, container, false)
 
-        // Handle system insets for full-screen experience
+        // Handle system insets
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            // Apply top padding to controls
             view.findViewById<ImageButton>(R.id.back_button)
                 .setPadding(12, systemBars.top + 12, 12, 12)
             view.findViewById<View>(R.id.zoom_buttons)
                 .setPadding(12, systemBars.top + 12, 12, 12)
-
-            v.setPadding(
-                v.paddingLeft,
-                v.paddingTop,
-                v.paddingRight,
-                systemBars.bottom
-            )
-
-            // Pass insets down
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, systemBars.bottom)
             insets
         }
 
-        // Back button - properly navigate back to home and update nav bar
+        // Back button
         view.findViewById<ImageButton>(R.id.back_button).setOnClickListener {
-            // Get reference to the activity and call the navigation method
             (activity as? HorizontalCoordinator)?.navigateToHome()
         }
 
-        // Initialize friend card
+        // Friend card style
         friendCard = view.findViewById(R.id.friend_list_card)
-
-        // Apply blur and transparency safely
         val friendBg = view.findViewById<View>(R.id.friend_list_bg)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            friendBg.setRenderEffect(
-                RenderEffect.createBlurEffect(20f, 20f, Shader.TileMode.CLAMP)
-            )
+            friendBg.setRenderEffect(RenderEffect.createBlurEffect(20f, 20f, Shader.TileMode.CLAMP))
         }
         friendCard.setCardBackgroundColor(Color.parseColor("#88FFFFFF"))
 
-        // Map fragment (childFragmentManager because this is inside a fragment)
+        // Map fragment
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
@@ -103,46 +96,94 @@ class FriendMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style)
             )
-
-            if (!success) {
-                Log.e("FriendMap", "Style parsing failed.")
-            }
+            if (!success) Log.e("FriendMap", "Map style parsing failed.")
         } catch (e: Resources.NotFoundException) {
-            Log.e("FriendMap", "Can't find style. Error: ", e)
+            Log.e("FriendMap", "Map style error: ", e)
         }
 
-        // Example user location (Johannesburg)
-        val userLocation = LatLng(-26.2041, 28.0473)
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
-
-        // Blue circle for user
-        mMap?.addCircle(
-            CircleOptions()
-                .center(userLocation)
-                .radius(10.0)
-                .fillColor(Color.BLUE)
-                .strokeColor(Color.BLUE)
-        )
-
-        // Random friends
-        val friends = List(4) {
-            LatLng(
-                userLocation.latitude + Random.nextDouble(-0.01, 0.01),
-                userLocation.longitude + Random.nextDouble(-0.01, 0.01)
-            )
+        if (LocationPermissionHelper.hasLocationPermission(requireContext())) {
+            setupRealTimeLocationListening()
+            centerOnCurrentUser()
+        } else {
+            LocationPermissionHelper.requestLocationPermission(requireActivity())
         }
+    }
 
-        friends.forEach { friend ->
-            mMap?.addMarker(
-                MarkerOptions()
-                    .position(friend)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-            )
+    private fun setupRealTimeLocationListening() {
+        locationListener = db.collection("users_location")
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    Log.e("FriendMap", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
+
+                if (snapshots == null) return@addSnapshotListener
+
+                for (dc in snapshots.documentChanges) {
+                    val doc = dc.document
+                    val userId = doc.id
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED, DocumentChange.Type.MODIFIED -> {
+                            val lat = doc.getDouble("latitude")
+                            val lng = doc.getDouble("longitude")
+                            val ts = doc.getLong("timestamp")
+                            if (lat != null && lng != null) updateUserMarker(userId, lat, lng, ts)
+                        }
+                        DocumentChange.Type.REMOVED -> {
+                            userMarkers.remove(userId)?.remove()
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun updateUserMarker(userId: String, lat: Double, lng: Double, timestamp: Long?) {
+        val location = LatLng(lat, lng)
+        val existingMarker = userMarkers[userId]
+        if (existingMarker != null) {
+            existingMarker.position = location
+        } else {
+            val hue = if (userId == auth.currentUser?.uid)
+                BitmapDescriptorFactory.HUE_BLUE
+            else BitmapDescriptorFactory.HUE_ORANGE
+
+            val markerOptions = MarkerOptions()
+                .position(location)
+                .title("User: ${userId.take(8)}")
+                .icon(BitmapDescriptorFactory.defaultMarker(hue))
+
+            mMap?.addMarker(markerOptions)?.let { marker ->
+                userMarkers[userId] = marker
+            }
         }
+    }
+
+    private fun centerOnCurrentUser() {
+        val currentUser = auth.currentUser ?: return
+        db.collection("users_location").document(currentUser.uid).get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val lat = doc.getDouble("latitude")
+                    val lng = doc.getDouble("longitude")
+                    if (lat != null && lng != null) {
+                        val userLocation = LatLng(lat, lng)
+                        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                        updateUserMarker(currentUser.uid, lat, lng, null)
+                        return@addOnSuccessListener
+                    }
+                }
+                // Default location (Johannesburg)
+                val fallback = LatLng(-26.2041, 28.0473)
+                mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(fallback, 15f))
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        locationListener?.remove()
     }
 }
