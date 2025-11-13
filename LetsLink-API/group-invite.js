@@ -181,6 +181,44 @@ app.get('/invite/:groupId', async (req, res) => {
         res.status(404).send('Invalid group invitation link.');
     }
 });
+app.get('/users/:userId/groups', async (req, res) => {
+    const userId = req.params.userId;
+    
+    if (!userId) {
+        return res.status(400).json({ error: 'Missing userId parameter.' });
+    }
+
+    try {
+        const groupsRef = db.ref('groups');
+        const snapshot = await groupsRef.once('value');
+        
+        if (!snapshot.exists()) {
+            return res.status(200).json({ groups: [] });
+        }
+
+        const userGroups = [];
+        
+        snapshot.forEach((groupSnapshot) => {
+            const groupData = groupSnapshot.val();
+            const groupId = groupSnapshot.key;
+            
+            // Check if user is creator or member
+            const isCreator = groupData.userId === userId;
+            const isMember = Array.isArray(groupData.members) && groupData.members.includes(userId);
+            
+            if (isCreator || isMember) {
+                userGroups.push(createGroupResponse(groupId, groupData));
+            }
+        });
+
+        console.log(`Found ${userGroups.length} groups for user ${userId}`);
+        return res.status(200).json({ groups: userGroups });
+
+    } catch (error) {
+        console.error("Error fetching user groups:", error);
+        return res.status(500).json({ error: 'Failed to fetch user groups.' });
+    }
+});
 
 /**
  * Endpoint to assign group invites to specific users
