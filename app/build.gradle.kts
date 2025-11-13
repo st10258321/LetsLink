@@ -2,10 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
+    id("kotlin-kapt")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
 }
+
+
+//configurations.all {
+//    resolutionStrategy {
+//        force("org.jetbrains.kotlinx:kotlinx-io-jvm:0.3.1")
+//        force("org.jetbrains.kotlinx:kotlinx-io-core:0.3.1")
+//    }
+//}
 
 android {
     namespace = "com.example.letslink"
@@ -36,8 +44,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlin {
-        jvmToolchain(11)
+    kotlinOptions {
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -47,7 +55,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -74,9 +81,8 @@ dependencies {
     implementation(libs.androidx.viewpager)
     implementation(libs.material)
 
-    // Google Play services - LOCATION & MAPS
+    // Google Play services
     implementation(libs.play.services.maps)
-    implementation(libs.play.services.location)
 
     // Extras
     implementation(libs.glide)
@@ -84,6 +90,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.media3.common.ktx)
+    implementation(libs.volley)
 
     // Testing
     testImplementation(libs.junit)
@@ -114,6 +121,7 @@ dependencies {
     implementation("org.kotlincrypto.hash:sha2")
     implementation("org.kotlincrypto.hash:sha3")
     implementation("org.kotlincrypto.hash:blake2")
+    implementation("com.google.android.material:material:1.12.0")
 
     // Retrofit
     implementation(libs.retrofit)
@@ -126,22 +134,36 @@ dependencies {
     // KotlinX Metadata
     implementation(libs.kotlinx.metadata.jvm)
 
-    // Firebase - UPDATED SECTION
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.google.signin)
     implementation(libs.firebase.messaging)
-    implementation("com.google.firebase:firebase-firestore") // Add this line
+    implementation("com.google.firebase:firebase-firestore")
+
+
+//    // KotlinX IO (force-stable version)
+//    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.5")
+//    implementation("org.jetbrains.kotlinx:kotlinx-io-jvm:0.5.5")
 
     // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.core.testing)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
-
-    // Coroutines for location service
+    //biometrics
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    //coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    //map stuff
+    implementation(libs.play.services.maps)
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 }
+
+
+
