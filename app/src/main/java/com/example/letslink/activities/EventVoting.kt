@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.letslink.model.Event
+import com.example.letslink.model.EventVotingResults
 import com.example.letslink.model.EventVoting_m
 
 class EventVoting : ComponentActivity() {
@@ -23,7 +24,7 @@ class EventVoting : ComponentActivity() {
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         setContent {
-            EventVotingScreen(events,groupId,userId) // ← your Compose swipe deck
+
         }
     }
 }
