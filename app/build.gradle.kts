@@ -1,24 +1,33 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
+    id("kotlin-kapt")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
 }
 
 android {
     namespace = "com.example.letslink"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.letslink"
         minSdk = 27
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Add this for Room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf(
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.incremental" to "true"
+                )
+            }
+        }
     }
 
     buildTypes {
@@ -32,116 +41,72 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlin {
-        jvmToolchain(11)
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
-        compose = true
         viewBinding = true
+        compose = true
     }
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.animation)
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    // Android Core
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx:1.8.0")
 
     // Navigation
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
-    // ViewPager / CoordinatorLayout / RecyclerView
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.coordinatorlayout)
-    implementation(libs.androidx.viewpager)
-    implementation(libs.material)
-
-    // Google Play services - LOCATION & MAPS
-    implementation(libs.play.services.maps)
-    implementation(libs.play.services.location)
-
-    // Extras
-    implementation(libs.glide)
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.material3)
-    implementation(libs.androidx.compose.ui.text)
-    implementation(libs.androidx.media3.common.ktx)
-
-    // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // Other UI
+    // UI Components
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    // ViewModel
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // Google Play services
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // Room Database
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
-    implementation("com.google.android.material:material:1.13.0")
+    // Room Database - UPDATED VERSIONS
+    implementation("androidx.room:room-runtime:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
 
-    // Hashing
-    implementation(platform("org.kotlincrypto.hash:bom:0.8.0"))
-    implementation("org.kotlincrypto.hash:md")
-    implementation("org.kotlincrypto.hash:sha1")
-    implementation("org.kotlincrypto.hash:sha2")
-    implementation("org.kotlincrypto.hash:sha3")
-    implementation("org.kotlincrypto.hash:blake2")
+    // ViewModel & Lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.retrofit2.kotlin.coroutines.adapter)
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
-    // Gson library
+    // Retrofit & Networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // KotlinX Metadata
-    implementation(libs.kotlinx.metadata.jvm)
-
-    // Firebase - UPDATED SECTION
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.database)
-    implementation(libs.google.signin)
-    implementation(libs.firebase.messaging)
-    implementation("com.google.firebase:firebase-firestore") // Add this line
-
-    // Unit Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.core.testing)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-
-    // Coroutines for location service
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
